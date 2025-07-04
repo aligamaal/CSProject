@@ -1,0 +1,63 @@
+# Makefile for Social Media Authentication System
+
+# Compiler settings
+CXX = g++
+CXXFLAGS = -std=c++17 -Wall -Wextra -O2
+INCLUDES = -I./include
+LIBS = -lssl -lcrypto -lpthread
+
+# Source files
+SRCDIR = src
+INCDIR = include
+SOURCES = main.cpp
+OBJECTS = $(SOURCES:.cpp=.o)
+TARGET = social_media_server
+
+# Default target
+all: $(TARGET)
+
+# Build the main executable
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
+
+# Compile source files
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+
+# Clean build files
+clean:
+	rm -f $(OBJECTS) $(TARGET)
+
+# Install dependencies (Ubuntu/Debian)
+install-deps:
+	sudo apt-get update
+	sudo apt-get install -y build-essential cmake libssl-dev
+
+# Install Crow framework
+install-crow:
+	@echo "Installing Crow framework..."
+	@if [ ! -d "Crow" ]; then \
+		git clone https://github.com/CrowCpp/Crow.git; \
+	fi
+	@cd Crow && mkdir -p build && cd build && cmake .. -DCROW_BUILD_EXAMPLES=OFF && make -j4 && sudo make install
+
+# Run the server
+run: $(TARGET)
+	./$(TARGET)
+
+# Debug build
+debug: CXXFLAGS += -g -DDEBUG
+debug: $(TARGET)
+
+# Help
+help:
+	@echo "Available targets:"
+	@echo "  all          - Build the project"
+	@echo "  clean        - Remove build files"
+	@echo "  install-deps - Install system dependencies"
+	@echo "  install-crow - Install Crow framework"
+	@echo "  run          - Build and run the server"
+	@echo "  debug        - Build with debug symbols"
+	@echo "  help         - Show this help message"
+
+.PHONY: all clean install-deps install-crow run debug help
