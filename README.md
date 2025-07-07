@@ -1,4 +1,5 @@
-# My Social Media Project
+# CS2 Project
+## (Team Members)
 
 ## UML Class Diagram
 ```mermaid
