@@ -631,110 +631,115 @@
 
         // Auth functions
         function handleLogin() {
-            const username = document.getElementById('login-username').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Reset errors
-            hideError('login-username-error');
-            hideError('login-password-error');
-            
-            // Validate
-            if (!username) {
-                showError('login-username-error', 'Username is required');
-                return;
-            }
-            
-            if (!password) {
-                showError('login-password-error', 'Password is required');
-                return;
-            }
-            
-            // Check credentials (in a real app, this would be an API call)
-            const user = mockUsers.find(u => u.username === username && u.password === password);
-            
-            if (user) {
-                // Successful login
-                state.currentUser = user;
-                usernameDisplay.textContent = user.username;
-                userAvatar.src = user.avatar;
-                currentUserAvatar.src = user.avatar;
-                
-                // Load data
-                loadAppData();
-                
-                // Switch to app view
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
+
+    fetch('http://localhost:18080/api/login', {
+
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Invalid credentials");
+        return res.json();
+    })
+    .then(data => {
+        state.currentUser = {
+            username: data.username,
+            avatar: data.avatar
+        };
+        usernameDisplay.textContent = data.username;
+        userAvatar.src = data.avatar;
+        currentUserAvatar.src = data.avatar;
+
+        authContainer.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        loadAppData();
+    })
+    .catch(err => {
+        showError('login-password-error', err.message);
+    });
+}
+
+function handleSignup() {
+    const username = document.getElementById('signup-username').value;
+    const password = document.getElementById('signup-password').value;
+    const confirm = document.getElementById('signup-confirm').value;
+
+    // Reset errors
+    hideError('signup-username-error');
+    hideError('signup-password-error');
+    hideError('signup-confirm-error');
+
+    // Basic client-side validation
+    if (!username) {
+        showError('signup-username-error', 'Username is required');
+        return;
+    }
+
+    if (username.length < 3) {
+        showError('signup-username-error', 'Username must be at least 3 characters');
+        return;
+    }
+
+    if (!password) {
+        showError('signup-password-error', 'Password is required');
+        return;
+    }
+
+    if (password.length < 6) {
+        showError('signup-password-error', 'Password must be at least 6 characters');
+        return;
+    }
+
+    if (password !== confirm) {
+        showError('signup-confirm-error', 'Passwords do not match');
+        return;
+    }
+
+    // Create JSON data
+    const data = JSON.stringify({
+        username: username,
+        password: password
+    });
+
+    // Send using XMLHttpRequest
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'http://localhost:18080/api/signup', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function() {
+        if (xhr.status === 200) {
+            try {
+                const data = JSON.parse(xhr.responseText);
+                state.currentUser = {
+                    username: data.username,
+                    avatar: data.avatar
+                };
+                usernameDisplay.textContent = data.username;
+                userAvatar.src = data.avatar;
+                currentUserAvatar.src = data.avatar;
+
+                loadAppData(); // Load mock friends/posts
+
                 authContainer.classList.add('hidden');
                 appContainer.classList.remove('hidden');
-            } else {
-                showError('login-password-error', 'Invalid username or password');
+            } catch (e) {
+                showError('signup-username-error', 'Invalid server response');
             }
+        } else {
+            showError('signup-username-error', 'Username might be taken or error occurred');
         }
+    };
 
-        function handleSignup() {
-            const username = document.getElementById('signup-username').value;
-            const password = document.getElementById('signup-password').value;
-            const confirm = document.getElementById('signup-confirm').value;
-            
-            // Reset errors
-            hideError('signup-username-error');
-            hideError('signup-password-error');
-            hideError('signup-confirm-error');
-            
-            // Validate
-            if (!username) {
-                showError('signup-username-error', 'Username is required');
-                return;
-            }
-            
-            if (username.length < 3) {
-                showError('signup-username-error', 'Username must be at least 3 characters');
-                return;
-            }
-            
-            if (!password) {
-                showError('signup-password-error', 'Password is required');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showError('signup-password-error', 'Password must be at least 6 characters');
-                return;
-            }
-            
-            if (password !== confirm) {
-                showError('signup-confirm-error', 'Passwords do not match');
-                return;
-            }
-            
-            // Check if username exists (in a real app, this would be an API call)
-            const userExists = mockUsers.some(u => u.username === username);
-            
-            if (userExists) {
-                showError('signup-username-error', 'Username already taken');
-                return;
-            }
-            
-            // Create new user (in a real app, this would be an API call)
-            const newUser = {
-                id: mockUsers.length + 1,
-                username,
-                password,
-                avatar: `https://via.placeholder.com/150/1DB954/FFFFFF?text=${username.charAt(0).toUpperCase()}`
-            };
-            
-            mockUsers.push(newUser);
-            state.currentUser = newUser;
-            usernameDisplay.textContent = newUser.username;
-            userAvatar.src = newUser.avatar;
-            currentUserAvatar.src = newUser.avatar;
-            
-            // Load data
-            loadAppData();
-            
-            // Switch to app view
-            authContainer.classList.add('hidden');
-            appContainer.classList.remove('hidden');
-        }
+    xhr.onerror = function() {
+        showError('signup-username-error', 'Network error occurred');
+    };
+
+    xhr.send(data);
+}
+
 
         function switchToLogin() {
             document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');

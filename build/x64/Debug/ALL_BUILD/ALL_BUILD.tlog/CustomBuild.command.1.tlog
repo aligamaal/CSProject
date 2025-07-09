@@ -1,0 +1,10 @@
+^C:\USERS\ANDRE\MY_CROW_APP\MY_APP\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/andre/my_crow_app/my_app -BC:/Users/andre/my_crow_app/my_app/build --check-stamp-file C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
