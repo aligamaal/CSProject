@@ -1,6 +1,6 @@
-^C:\USERS\ANDRE\MY_CROW_APP\MY_APP\BUILD\CMAKEFILES\B1F7F6CC33AFCFF8B998EE234ACCB472\GENERATE.STAMP.RULE
+^C:\USERS\ANDRE\ONEDRIVE - AUCEGYPT.EDU\CSPROJECT\BUILD\CMAKEFILES\AC5305968F74A5C7A9B5C513171840AA\GENERATE.STAMP.RULE
 setlocal
-"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/andre/my_crow_app/my_app -BC:/Users/andre/my_crow_app/my_app/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/andre/my_crow_app/my_app/build/MyCrowApp.sln
+"C:\Program Files\CMake\bin\cmake.exe" "-SC:/Users/andre/OneDrive - aucegypt.edu/CSProject" "-BC:/Users/andre/OneDrive - aucegypt.edu/CSProject/build" --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file "C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/MyCrowApp.sln"
 if %errorlevel% neq 0 goto :cmEnd
 :cmEnd
 endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone

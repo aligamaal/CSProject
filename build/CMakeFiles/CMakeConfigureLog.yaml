@@ -75,9 +75,9 @@ events:
       The output was:
       0
       MSBuild version 17.14.14+a129329f1 for .NET Framework
-      Build started 7/9/2025 9:31:42 PM.
+      Build started 7/15/2025 12:30:47 PM.
       
-      Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
+      Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.vcxproj" on node 1 (default targets).
       PrepareForBuild:
         Creating directory "Debug\\".
         Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
@@ -93,13 +93,13 @@ events:
         CMakeCCompilerId.c
       Link:
         C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdC.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\lib" /LIBPATH:"C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\lib\\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\lib\\*.lib" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdC.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdC.lib" /MACHINE:X64 Debug\\CMakeCCompilerId.obj
-        CompilerIdC.vcxproj -> C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe
+        CompilerIdC.vcxproj -> C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe
       AppLocalFromInstalled:
-        pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+        pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"
         'pwsh.exe' is not recognized as an internal or external command,
         operable program or batch file.
-        The command "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"" exited with code 9009.
-        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+        The command "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"" exited with code 9009.
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdC.tlog\\CompilerIdC.write.1u.tlog" "Debug\\vcpkg.applocal.log"
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_C_COMPILER=%%~$PATH:i
         :VCEnd
@@ -107,13 +107,13 @@ events:
       FinalizeBuildStatus:
         Deleting file "Debug\\CompilerIdC.tlog\\unsuccessfulbuild".
         Touching "Debug\\CompilerIdC.tlog\\CompilerIdC.lastbuildstate".
-      Done Building Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.vcxproj" (default targets).
+      Done Building Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdC\\CompilerIdC.vcxproj" (default targets).
       
       Build succeeded.
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:00.85
+      Time Elapsed 00:00:00.99
       
       
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.exe"
@@ -121,7 +121,7 @@ events:
       Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CompilerIdC.vcxproj"
       
       The C compiler identification is MSVC, found in:
-        C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/4.1.0-rc1/CompilerIdC/CompilerIdC.exe
+        C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/4.1.0-rc1/CompilerIdC/CompilerIdC.exe
       
   -
     kind: "find-v1"
@@ -1482,9 +1482,9 @@ events:
       The output was:
       0
       MSBuild version 17.14.14+a129329f1 for .NET Framework
-      Build started 7/9/2025 9:31:43 PM.
+      Build started 7/15/2025 12:30:49 PM.
       
-      Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
+      Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
       PrepareForBuild:
         Creating directory "Debug\\".
         Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
@@ -1500,13 +1500,13 @@ events:
         CMakeCXXCompilerId.cpp
       Link:
         C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:"C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\lib" /LIBPATH:"C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\lib\\manual-link" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\lib\\*.lib" /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe
+        CompilerIdCXX.vcxproj -> C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe
       AppLocalFromInstalled:
-        pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+        pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"
         'pwsh.exe' is not recognized as an internal or external command,
         operable program or batch file.
-        The command "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"" exited with code 9009.
-        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"
+        The command "pwsh.exe -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"" exited with code 9009.
+        "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -ExecutionPolicy Bypass -noprofile -File "C:\\Users\\andre\\vcpkg\\scripts\\buildsystems\\msbuild\\applocal.ps1" "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.exe" "C:\\Users\\andre\\vcpkg\\installed\\x64-windows\\bin" "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.write.1u.tlog" "Debug\\vcpkg.applocal.log"
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
         :VCEnd
@@ -1514,13 +1514,13 @@ events:
       FinalizeBuildStatus:
         Deleting file "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
         Touching "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
-      Done Building Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
+      Done Building Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\4.1.0-rc1\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
       
       Build succeeded.
           0 Warning(s)
           0 Error(s)
       
-      Time Elapsed 00:00:00.95
+      Time Elapsed 00:00:00.92
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -1528,7 +1528,7 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
       
       The CXX compiler identification is MSVC, found in:
-        C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/4.1.0-rc1/CompilerIdCXX/CompilerIdCXX.exe
+        C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/4.1.0-rc1/CompilerIdCXX/CompilerIdCXX.exe
       
   -
     kind: "find-v1"
@@ -2388,8 +2388,8 @@ events:
     checks:
       - "Detecting C compiler ABI info"
     directories:
-      source: "C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-5d3rdo"
-      binary: "C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-5d3rdo"
+      source: "C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-d19x58"
+      binary: "C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-d19x58"
     cmakeVariables:
       CMAKE_C_FLAGS: "/DWIN32 /D_WINDOWS /W3"
       CMAKE_C_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -2402,40 +2402,40 @@ events:
       variable: "CMAKE_C_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-5d3rdo'
+        Change Dir: 'C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-d19x58'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_68117.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_46afd.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         MSBuild version 17.14.14+a129329f1 for .NET Framework
-        Build started 7/9/2025 9:31:44 PM.
+        Build started 7/15/2025 12:30:50 PM.
         
-        Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5d3rdo\\cmTC_68117.vcxproj" on node 1 (default targets).
+        Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d19x58\\cmTC_46afd.vcxproj" on node 1 (default targets).
         PrepareForBuild:
-          Creating directory "cmTC_68117.dir\\Debug\\".
+          Creating directory "cmTC_46afd.dir\\Debug\\".
           Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5d3rdo\\Debug\\".
-          Creating directory "cmTC_68117.dir\\Debug\\cmTC_68117.tlog\\".
+          Creating directory "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d19x58\\Debug\\".
+          Creating directory "cmTC_46afd.dir\\Debug\\cmTC_46afd.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_68117.dir\\Debug\\cmTC_68117.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_68117.dir\\Debug\\cmTC_68117.tlog\\unsuccessfulbuild".
+          Creating "cmTC_46afd.dir\\Debug\\cmTC_46afd.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_46afd.dir\\Debug\\cmTC_46afd.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_68117.dir\\Debug\\\\" /Fd"cmTC_68117.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_46afd.dir\\Debug\\\\" /Fd"cmTC_46afd.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35211 for x64
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_68117.dir\\Debug\\\\" /Fd"cmTC_68117.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /RTC1 /MDd /GS /fp:precise /Fo"cmTC_46afd.dir\\Debug\\\\" /Fd"cmTC_46afd.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TC /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCCompilerABI.c"
           CMakeCCompilerABI.c
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5d3rdo\\Debug\\cmTC_68117.exe" /INCREMENTAL /ILK:"cmTC_68117.dir\\Debug\\cmTC_68117.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-5d3rdo/Debug/cmTC_68117.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-5d3rdo/Debug/cmTC_68117.lib" /MACHINE:X64  /machine:x64 cmTC_68117.dir\\Debug\\CMakeCCompilerABI.obj
-          cmTC_68117.vcxproj -> C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5d3rdo\\Debug\\cmTC_68117.exe
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d19x58\\Debug\\cmTC_46afd.exe" /INCREMENTAL /ILK:"cmTC_46afd.dir\\Debug\\cmTC_46afd.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-d19x58/Debug/cmTC_46afd.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-d19x58/Debug/cmTC_46afd.lib" /MACHINE:X64  /machine:x64 cmTC_46afd.dir\\Debug\\CMakeCCompilerABI.obj
+          cmTC_46afd.vcxproj -> C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d19x58\\Debug\\cmTC_46afd.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_68117.dir\\Debug\\cmTC_68117.tlog\\unsuccessfulbuild".
-          Touching "cmTC_68117.dir\\Debug\\cmTC_68117.tlog\\cmTC_68117.lastbuildstate".
-        Done Building Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-5d3rdo\\cmTC_68117.vcxproj" (default targets).
+          Deleting file "cmTC_46afd.dir\\Debug\\cmTC_46afd.tlog\\unsuccessfulbuild".
+          Touching "cmTC_46afd.dir\\Debug\\cmTC_46afd.tlog\\cmTC_46afd.lastbuildstate".
+        Done Building Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-d19x58\\cmTC_46afd.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:00.42
+        Time Elapsed 00:00:00.69
         
       exitCode: 0
   -
@@ -2475,8 +2475,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-yg7fwe"
-      binary: "C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-yg7fwe"
+      source: "C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-09n04r"
+      binary: "C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-09n04r"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /W3 /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/MDd /Zi /Ob0 /Od /RTC1"
@@ -2490,40 +2490,40 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-yg7fwe'
+        Change Dir: 'C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-09n04r'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_350e0.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
+        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_61317.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
         MSBuild version 17.14.14+a129329f1 for .NET Framework
-        Build started 7/9/2025 9:31:45 PM.
+        Build started 7/15/2025 12:30:51 PM.
         
-        Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yg7fwe\\cmTC_350e0.vcxproj" on node 1 (default targets).
+        Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-09n04r\\cmTC_61317.vcxproj" on node 1 (default targets).
         PrepareForBuild:
-          Creating directory "cmTC_350e0.dir\\Debug\\".
+          Creating directory "cmTC_61317.dir\\Debug\\".
           Structured output is enabled. The formatting of compiler diagnostics will reflect the error hierarchy. See https://aka.ms/cpp/structured-output for more details.
-          Creating directory "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yg7fwe\\Debug\\".
-          Creating directory "cmTC_350e0.dir\\Debug\\cmTC_350e0.tlog\\".
+          Creating directory "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-09n04r\\Debug\\".
+          Creating directory "cmTC_61317.dir\\Debug\\cmTC_61317.tlog\\".
         InitializeBuildStatus:
-          Creating "cmTC_350e0.dir\\Debug\\cmTC_350e0.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_350e0.dir\\Debug\\cmTC_350e0.tlog\\unsuccessfulbuild".
+          Creating "cmTC_61317.dir\\Debug\\cmTC_61317.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
+          Touching "cmTC_61317.dir\\Debug\\cmTC_61317.tlog\\unsuccessfulbuild".
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_350e0.dir\\Debug\\\\" /Fd"cmTC_350e0.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\CL.exe /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_61317.dir\\Debug\\\\" /Fd"cmTC_61317.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
           Microsoft (R) C/C++ Optimizing Compiler Version 19.44.35211 for x64
           Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_350e0.dir\\Debug\\\\" /Fd"cmTC_350e0.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W3 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /EHsc /RTC1 /MDd /GS /fp:precise /GR /Fo"cmTC_61317.dir\\Debug\\\\" /Fd"cmTC_61317.dir\\Debug\\vc143.pdb" /external:W3 /Gd /TP /errorReport:queue "C:\\Program Files\\CMake\\share\\cmake-4.1\\Modules\\CMakeCXXCompilerABI.cpp"
           CMakeCXXCompilerABI.cpp
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yg7fwe\\Debug\\cmTC_350e0.exe" /INCREMENTAL /ILK:"cmTC_350e0.dir\\Debug\\cmTC_350e0.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-yg7fwe/Debug/cmTC_350e0.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/andre/my_crow_app/my_app/build/CMakeFiles/CMakeScratch/TryCompile-yg7fwe/Debug/cmTC_350e0.lib" /MACHINE:X64  /machine:x64 cmTC_350e0.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_350e0.vcxproj -> C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yg7fwe\\Debug\\cmTC_350e0.exe
+          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\HostX64\\x64\\link.exe /OUT:"C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-09n04r\\Debug\\cmTC_61317.exe" /INCREMENTAL /ILK:"cmTC_61317.dir\\Debug\\cmTC_61317.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-09n04r/Debug/cmTC_61317.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"C:/Users/andre/OneDrive - aucegypt.edu/CSProject/build/CMakeFiles/CMakeScratch/TryCompile-09n04r/Debug/cmTC_61317.lib" /MACHINE:X64  /machine:x64 cmTC_61317.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_61317.vcxproj -> C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-09n04r\\Debug\\cmTC_61317.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_350e0.dir\\Debug\\cmTC_350e0.tlog\\unsuccessfulbuild".
-          Touching "cmTC_350e0.dir\\Debug\\cmTC_350e0.tlog\\cmTC_350e0.lastbuildstate".
-        Done Building Project "C:\\Users\\andre\\my_crow_app\\my_app\\build\\CMakeFiles\\CMakeScratch\\TryCompile-yg7fwe\\cmTC_350e0.vcxproj" (default targets).
+          Deleting file "cmTC_61317.dir\\Debug\\cmTC_61317.tlog\\unsuccessfulbuild".
+          Touching "cmTC_61317.dir\\Debug\\cmTC_61317.tlog\\cmTC_61317.lastbuildstate".
+        Done Building Project "C:\\Users\\andre\\OneDrive - aucegypt.edu\\CSProject\\build\\CMakeFiles\\CMakeScratch\\TryCompile-09n04r\\cmTC_61317.vcxproj" (default targets).
         
         Build succeeded.
             0 Warning(s)
             0 Error(s)
         
-        Time Elapsed 00:00:00.52
+        Time Elapsed 00:00:00.57
         
       exitCode: 0
   -

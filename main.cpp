@@ -13,19 +13,45 @@
 using namespace std;
 namespace fs = std::filesystem;
 
-struct User {
+class User {
+    public:
     string username;
+    string salt;
     size_t hashedPassword;
+      
 
     User(const string& uname, const string& password)
-        : username(uname), hashedPassword(hashPassword(password)) {}
-
-    static size_t hashPassword(const string& password) {
-        return hash<string>{}(password);
-    }
+        : username(uname){
+        salt = generateSalt();  
+        hashedPassword = hashPasswordWithSalt(password, salt); 
+        // Debug output for registration
+        cout << "=== USER REGISTRATION DEBUG ===" << endl;
+        cout << "Username: " << username << endl;
+        cout << "Original password: " << password << endl;
+        cout << "Generated salt: " << salt << endl;
+        cout << "Combined string: " << (password + salt) << endl;
+        cout << "Final hash: " << hashedPassword << endl;
+        cout << "===============================" << endl;
+    } 
 
     bool checkPassword(const string& password) const {
-        return hashedPassword == hashPassword(password);
+        return hashedPassword == hashPasswordWithSalt(password, salt);
+    }
+    string generateSalt(){
+        static random_device rd;
+        static mt19937 gen(rd());
+        static uniform_int_distribution<> dis(0, 15);
+        stringstream ss;
+        for (int i = 0; i < 16; ++i) {  // 16 character salt
+            ss << hex << dis(gen);
+        }
+        return ss.str();
+    }
+    string getSalt(){
+        return salt;
+    }
+    static size_t hashPasswordWithSalt(const string& password, const string& salt) {
+        return hash<string>{}(password + salt); 
     }
 };
 
@@ -58,6 +84,15 @@ public:
         auto it = users.find(username);
         if (it == users.end() || !it->second.checkPassword(password))
             return "";
+            const string& userSalt = it->second.getSalt();
+     size_t computedHash = User::hashPasswordWithSalt(password,userSalt);
+    
+     cout << "Stored hash: " << it->second.hashedPassword << endl;
+     cout << "Computed hash: " << computedHash << endl;
+     cout << "Match: " << (it->second.hashedPassword == computedHash) << endl;
+    
+    if (!it->second.checkPassword(password))
+        return "";
 
         string token = generateToken();
         sessions[token] = username;
