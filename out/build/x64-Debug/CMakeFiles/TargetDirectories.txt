@@ -1,0 +1,3 @@
+C:/Users/andre/OneDrive - aucegypt.edu/CSProject/out/build/x64-Debug/CMakeFiles/my_app.dir
+C:/Users/andre/OneDrive - aucegypt.edu/CSProject/out/build/x64-Debug/CMakeFiles/edit_cache.dir
+C:/Users/andre/OneDrive - aucegypt.edu/CSProject/out/build/x64-Debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../Source Files"
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"filesystem": "cpp",
+			"unordered_map": "cpp",
+			"string": "cpp",
+			"mutex": "cpp",
+			"random": "cpp"
+		}
+	}
+}

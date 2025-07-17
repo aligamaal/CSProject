@@ -1,5 +1,9 @@
 #define CROW_USE_ASIO
 #include "crow_all.h"
+#include "User.h"
+#include "CORSMiddleware.h"
+#include "AuthManager.h"
+#include "utils.h"
 #include <unordered_map>
 #include <mutex>
 #include <string>
@@ -10,144 +14,8 @@
 #include <fstream>
 #include <filesystem>
 
-using namespace std;
-namespace fs = std::filesystem;
-
-class User {
-    public:
-    string username;
-    string salt;
-    size_t hashedPassword;
-      
-
-    User(const string& uname, const string& password)
-        : username(uname){
-        salt = generateSalt();  
-        hashedPassword = hashPasswordWithSalt(password, salt); 
-        // Debug output for registration
-        cout << "=== USER REGISTRATION DEBUG ===" << endl;
-        cout << "Username: " << username << endl;
-        cout << "Original password: " << password << endl;
-        cout << "Generated salt: " << salt << endl;
-        cout << "Combined string: " << (password + salt) << endl;
-        cout << "Final hash: " << hashedPassword << endl;
-        cout << "===============================" << endl;
-    } 
-
-    bool checkPassword(const string& password) const {
-        return hashedPassword == hashPasswordWithSalt(password, salt);
-    }
-    string generateSalt(){
-        static random_device rd;
-        static mt19937 gen(rd());
-        static uniform_int_distribution<> dis(0, 15);
-        stringstream ss;
-        for (int i = 0; i < 16; ++i) {  // 16 character salt
-            ss << hex << dis(gen);
-        }
-        return ss.str();
-    }
-    string getSalt(){
-        return salt;
-    }
-    static size_t hashPasswordWithSalt(const string& password, const string& salt) {
-        return hash<string>{}(password + salt); 
-    }
-};
-
-class AuthManager {
-private:
-    unordered_map<string, User> users;
-    unordered_map<string, string> sessions;
-    mutex data_mutex;
-
-    string generateToken() {
-        stringstream ss;
-        static random_device rd;
-        static mt19937 gen(rd());
-        static uniform_int_distribution<> dis(0, 15);
-        for (int i = 0; i < 32; ++i)
-            ss << hex << dis(gen);
-        return ss.str();
-    }
-
-public:
-    bool registerUser(const string& username, const string& password) {
-        lock_guard<mutex> lock(data_mutex);
-        if (users.count(username)) return false;
-        users.emplace(username, User(username, password));
-        return true;
-    }
-
-    string loginUser(const string& username, const string& password) {
-        lock_guard<mutex> lock(data_mutex);
-        auto it = users.find(username);
-        if (it == users.end() || !it->second.checkPassword(password))
-            return "";
-            const string& userSalt = it->second.getSalt();
-     size_t computedHash = User::hashPasswordWithSalt(password,userSalt);
-    
-     cout << "Stored hash: " << it->second.hashedPassword << endl;
-     cout << "Computed hash: " << computedHash << endl;
-     cout << "Match: " << (it->second.hashedPassword == computedHash) << endl;
-    
-    if (!it->second.checkPassword(password))
-        return "";
-
-        string token = generateToken();
-        sessions[token] = username;
-        return token;
-    }
-
-    string* getUsernameFromToken(const string& token) {
-        lock_guard<mutex> lock(data_mutex);
-        auto it = sessions.find(token);
-        if (it != sessions.end()) {
-            return &it->second;
-        }
-        return nullptr;
-    }
-};
-
-// Enhanced CORS Middleware
-struct CORSMiddleware {
-    struct context {};
-
-    void before_handle(crow::request& req, crow::response& res, context& /*ctx*/) {
-        // Set CORS headers
-        res.set_header("Access-Control-Allow-Origin", "*");
-        res.set_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-        res.set_header("Access-Control-Allow-Credentials", "true");
-
-        // Handle preflight request
-        if (req.method == "OPTIONS"_method) {
-            res.code = 200;
-            res.end();
-            return;
-        }
-    }
-
-    void after_handle(crow::request& /*req*/, crow::response& /*res*/, context& /*ctx*/) {}
-};
-
-string getMimeType(const string& filename) {
-    if (filename.find(".html") != string::npos) return "text/html";
-    if (filename.find(".css") != string::npos) return "text/css";
-    if (filename.find(".js") != string::npos) return "application/javascript";
-    if (filename.find(".png") != string::npos) return "image/png";
-    if (filename.find(".jpg") != string::npos || filename.find(".jpeg") != string::npos) return "image/jpeg";
-    if (filename.find(".gif") != string::npos) return "image/gif";
-    if (filename.find(".svg") != string::npos) return "image/svg+xml";
-    if (filename.find(".woff") != string::npos) return "font/woff";
-    if (filename.find(".woff2") != string::npos) return "font/woff2";
-    if (filename.find(".ttf") != string::npos) return "font/ttf";
-    if (filename.find(".ico") != string::npos) return "image/x-icon";
-    return "text/plain";
-}
-
 int main()
-{
+{   
     crow::App<CORSMiddleware> app;
 
     auto auth = std::make_shared<AuthManager>();

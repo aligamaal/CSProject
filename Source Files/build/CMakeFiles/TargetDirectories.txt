@@ -1,0 +1,3 @@
+C:/Users/andre/OneDrive - aucegypt.edu/CSProject/Source Files/build/CMakeFiles/my_app.dir
+C:/Users/andre/OneDrive - aucegypt.edu/CSProject/Source Files/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/andre/OneDrive - aucegypt.edu/CSProject/Source Files/build/CMakeFiles/ZERO_CHECK.dir
