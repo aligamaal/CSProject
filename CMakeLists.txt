@@ -70,8 +70,8 @@ add_executable(my_app ${CORE_SOURCES} ${EXTRA_SOURCES})
 
 # Include directories
 target_include_directories(my_app PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/${HEADER_DIR}"
-    "${CROW_INCLUDE_DIR}"
+    ${CROW_INCLUDE_DIR}
+    ${CROW_INCLUDE_DIR}/crow
 )
 
 # Find and link dependencies
