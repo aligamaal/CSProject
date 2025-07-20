@@ -42,7 +42,7 @@ set(CROW_PATHS_TO_TRY
 # Find crow_all.h
 unset(CROW_INCLUDE_DIR CACHE)  # Clear any cached value
 foreach(path ${CROW_PATHS_TO_TRY})
-    if(EXISTS "${path}/crow_all.h")
+    if(EXISTS "${path}/crow.h" OR EXISTS "${path}/crow/crow.h")
         set(CROW_INCLUDE_DIR "${path}" CACHE PATH "Path to Crow headers")
         break()
     endif()
