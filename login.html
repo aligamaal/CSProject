@@ -3,947 +3,1165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SoundSpace - Social Media for Music Lovers</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>SoundSpace</title>
     <style>
-        :root {
-            --primary-color: #1DB954;
-            --dark-bg: #121212;
-            --light-bg: #181818;
-            --text-primary: #FFFFFF;
-            --text-secondary: #B3B3B3;
-            --card-bg: #282828;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Montserrat', sans-serif;
         }
 
         body {
-            background-color: var(--dark-bg);
-            color: var(--text-primary);
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            min-height: 100vh;
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        /* Navbar styles */
-        .navbar {
+        /* Header Styles */
+        .header {
+            background-color: #000;
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
-            background-color: var(--light-bg);
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 100;
+            border-bottom: 1px solid #333;
         }
 
-        .navbar-brand {
+        .logo {
             display: flex;
             align-items: center;
+            gap: 0.5rem;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: bold;
         }
 
-        .navbar-brand i {
-            margin-right: 0.5rem;
-            color: var(--primary-color);
+        .logo::before {
+            content: '🎵';
+            font-size: 1.5rem;
+        }
+
+        .logo span {
+            color: #1DB954;
+        }
+
+        .search-container {
+            flex: 0 1 500px;
+            position: relative;
         }
 
         .search-bar {
-            display: flex;
-            width: 40%;
-        }
-
-        .search-bar input {
             width: 100%;
-            padding: 0.5rem 1rem;
-            border-radius: 20px 0 0 20px;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            background-color: #2a2a2a;
             border: none;
-            background-color: var(--card-bg);
-            color: var(--text-primary);
+            border-radius: 50px;
+            color: #fff;
+            font-size: 0.9rem;
         }
 
-        .search-bar button {
-            padding: 0.5rem 1rem;
-            border-radius: 0 20px 20px 0;
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #1DB954;
             border: none;
-            background-color: var(--primary-color);
-            color: white;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
 
+        .search-btn:hover {
+            background-color: #1ed760;
+        }
+
+        /* User menu */
         .user-menu {
             display: flex;
             align-items: center;
-            cursor: pointer;
-        }
-
-        .user-menu img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-        }
-
-        /* Main content layout */
-        .main-content {
-            display: flex;
-            margin-top: 70px;
-            min-height: calc(100vh - 70px);
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: var(--light-bg);
-            padding: 1.5rem;
-            position: fixed;
-            height: calc(100vh - 70px);
-            overflow-y: auto;
-        }
-
-        .sidebar-section {
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-section h3 {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-
-        .sidebar-section ul {
-            list-style: none;
-        }
-
-        .sidebar-section li {
-            margin-bottom: 0.5rem;
-        }
-
-        .sidebar-section li a {
-            display: flex;
-            align-items: center;
-            color: var(--text-primary);
-            text-decoration: none;
-            padding: 0.5rem 0;
-        }
-
-        .sidebar-section li a i {
-            margin-right: 0.75rem;
-            width: 20px;
-            text-align: center;
-        }
-
-        .sidebar-section li.active a {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .suggestions-list {
-            display: flex;
-            flex-direction: column;
             gap: 1rem;
         }
 
-        .suggestion-card {
-            display: flex;
-            align-items: center;
-            background-color: var(--card-bg);
-            padding: 0.75rem;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .suggestion-card img {
+        .user-avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            margin-right: 0.75rem;
-        }
-
-        .suggestion-info h4 {
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .suggestion-info p {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .add-friend-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 0.25rem 0.5rem;
-            border-radius: 3px;
-            font-size: 0.7rem;
-            margin-top: 0.25rem;
             cursor: pointer;
         }
 
-        /* Timeline styles */
-        .timeline {
-            flex: 1;
-            margin: 0 300px 0 250px;
-            padding: 1.5rem;
-        }
-
-        .post-creator {
+        /* Main Layout */
+        .main-container {
             display: flex;
-            align-items: center;
-            background-color: var(--light-bg);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
+            height: calc(100vh - 73px);
         }
 
-        .post-creator img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 1rem;
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #000;
+            padding: 2rem 1rem;
+            border-right: 1px solid #333;
         }
 
-        .post-creator input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border-radius: 20px;
-            border: none;
-            background-color: var(--card-bg);
-            color: var(--text-primary);
+        .menu-section {
+            margin-bottom: 2rem;
         }
 
-        .post-button {
-            margin-left: 1rem;
-            padding: 0.75rem 1.5rem;
-            border-radius: 20px;
-            border: none;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        /* Post styles */
-        .post {
-            background-color: var(--light-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .post-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .post-header img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 1rem;
-        }
-
-        .post-user-info h4 {
-            font-size: 1rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .post-user-info p {
+        .menu-title {
             font-size: 0.8rem;
-            color: var(--text-secondary);
-        }
-
-        .post-content {
+            color: #888;
+            text-transform: uppercase;
             margin-bottom: 1rem;
-            line-height: 1.5;
+            font-weight: 600;
         }
 
-        .post-actions {
-            display: flex;
-            border-top: 1px solid var(--card-bg);
-            padding-top: 1rem;
-        }
-
-        .post-action {
+        .menu-item {
             display: flex;
             align-items: center;
-            margin-right: 1.5rem;
-            color: var(--text-secondary);
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            color: #888;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.2s;
             cursor: pointer;
         }
 
-        .post-action i {
-            margin-right: 0.5rem;
+        .menu-item:hover {
+            color: #fff;
+            background-color: #1a1a1a;
         }
 
-        .post-action:hover {
-            color: var(--primary-color);
+        .menu-item.active {
+            color: #1DB954;
         }
 
-        /* Right sidebar styles */
-        .right-sidebar {
-            width: 300px;
-            background-color: var(--light-bg);
-            padding: 1.5rem;
-            position: fixed;
-            right: 0;
-            height: calc(100vh - 70px);
+        .menu-item::before {
+            font-size: 1.2rem;
+        }
+
+        .menu-item:nth-child(1)::before { content: '🏠'; }
+        .menu-item:nth-child(2)::before { content: '👥'; }
+        .menu-item:nth-child(3)::before { content: '🔔'; }
+        .menu-item:nth-child(4)::before { content: '⚙️'; }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            background-color: #1a1a1a;
+            padding: 2rem;
             overflow-y: auto;
         }
 
-        .friends-list h3, .mutual-friends h3 {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            margin-bottom: 1rem;
-        }
-
-        .friend-card {
+        /* Post Creation */
+        .post-creation {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
             display: flex;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--card-bg);
+            gap: 1rem;
+            align-items: flex-start;
         }
 
-        .friend-card img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 0.75rem;
-        }
-
-        .friend-info h4 {
-            font-size: 0.9rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .friend-info p {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        /* Auth styles */
-        #auth-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: var(--dark-bg);
-        }
-
-        .auth-forms {
-            background-color: var(--light-bg);
-            padding: 2rem;
-            border-radius: 8px;
-            width: 400px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 1.5rem;
-        }
-
-        .auth-tab {
+        .post-input {
             flex: 1;
-            text-align: center;
-            padding: 0.75rem;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 25px;
+            padding: 0.75rem 1.5rem;
+            color: #fff;
+            font-size: 1rem;
+            resize: none;
+            font-family: inherit;
+        }
+
+        .post-btn {
+            background-color: #1DB954;
+            color: #000;
+            border: none;
+            border-radius: 25px;
+            padding: 0.75rem 2rem;
+            font-weight: bold;
             cursor: pointer;
-            border-bottom: 2px solid transparent;
+            transition: background-color 0.2s;
         }
 
-        .auth-tab.active {
-            border-bottom: 2px solid var(--primary-color);
+        .post-btn:hover {
+            background-color: #1ed760;
+        }
+
+        /* Right Sidebar */
+        .right-sidebar {
+            width: 300px;
+            background-color: #000;
+            padding: 2rem 1rem;
+            border-left: 1px solid #333;
+        }
+
+        .friends-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 1rem;
             font-weight: 600;
+            text-transform: uppercase;
         }
 
-        .auth-form {
-            display: none;
+        /* Login/Signup Styles */
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
         }
 
-        .auth-form.active {
-            display: block;
+        .auth-box {
+            background-color: #000;
+            border-radius: 10px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: #888;
         }
 
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
-        .form-group label {
+        .form-label {
             display: block;
             margin-bottom: 0.5rem;
+            color: #ccc;
             font-size: 0.9rem;
         }
 
-        .form-group input {
+        .form-input {
             width: 100%;
-            padding: 0.75rem;
-            border-radius: 4px;
-            border: none;
-            background-color: var(--card-bg);
-            color: var(--text-primary);
+            padding: 0.75rem 1rem;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 1rem;
+            transition: border-color 0.2s;
         }
 
-        .auth-button {
+        .form-input:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+
+        .auth-btn {
             width: 100%;
             padding: 0.75rem;
-            border-radius: 4px;
+            background-color: #1DB954;
+            color: #000;
             border: none;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 600;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .auth-btn:hover {
+            background-color: #1ed760;
         }
 
         .auth-switch {
             text-align: center;
-            margin-top: 1rem;
-            font-size: 0.9rem;
+            margin-top: 1.5rem;
+            color: #888;
         }
 
         .auth-switch a {
-            color: var(--primary-color);
-            cursor: pointer;
+            color: #1DB954;
             text-decoration: none;
         }
 
-        .error-message {
-            color: #ff4d4d;
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
+        .auth-switch a:hover {
+            text-decoration: underline;
+        }
+
+        /* Error/Success Messages */
+        .message {
+            padding: 0.75rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .error {
+            background-color: #ff4444;
+            color: #fff;
+        }
+
+        .success {
+            background-color: #1DB954;
+            color: #000;
+        }
+
+        /* Users List */
+        .users-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .user-card {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: background-color 0.2s;
+        }
+
+        .user-card:hover {
+            background-color: #333;
+        }
+
+        .user-avatar-small {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-status {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .friend-btn {
+            padding: 0.5rem 1rem;
+            background-color: #1DB954;
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .friend-btn:hover {
+            background-color: #1ed760;
+        }
+
+        .friend-btn.pending {
+            background-color: #333;
+            color: #888;
+        }
+
+        .friend-btn.friend {
+            background-color: transparent;
+            color: #1DB954;
+            border: 1px solid #1DB954;
+        }
+
+        /* Hide elements initially */
+        .dashboard-content {
             display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Auth screens will be shown here initially -->
-    <div id="auth-container">
-        <div class="auth-forms">
-            <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Login</div>
-                <div class="auth-tab" data-tab="signup">Sign Up</div>
+    <!-- Login/Signup Container -->
+    <div id="authContainer" class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>🎵 <span style="color: #1DB954;">Sound</span>Space</h1>
+                <p id="authTitle">Sign in to continue</p>
             </div>
             
-            <div id="login-form" class="auth-form active">
-                <div class="form-group">
-                    <label for="login-username">Username</label>
-                    <input type="text" id="login-username" placeholder="Enter your username">
-                    <div class="error-message" id="login-username-error"></div>
-                </div>
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" placeholder="Enter your password">
-                    <div class="error-message" id="login-password-error"></div>
-                </div>
-                <button class="auth-button" id="login-button">Log In</button>
-                <div class="auth-switch">
-                    Don't have an account? <a id="show-signup">Sign up</a>
-                </div>
-            </div>
+            <div id="message"></div>
             
-            <div id="signup-form" class="auth-form">
+            <form id="authForm">
                 <div class="form-group">
-                    <label for="signup-username">Username</label>
-                    <input type="text" id="signup-username" placeholder="Choose a username">
-                    <div class="error-message" id="signup-username-error"></div>
+                    <label class="form-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-input" required>
                 </div>
+                
                 <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input type="password" id="signup-password" placeholder="Create a password">
-                    <div class="error-message" id="signup-password-error"></div>
+                    <label class="form-label" for="password">Password</label>
+                    <input type="password" id="password" class="form-input" required>
                 </div>
-                <div class="form-group">
-                    <label for="signup-confirm">Confirm Password</label>
-                    <input type="password" id="signup-confirm" placeholder="Confirm your password">
-                    <div class="error-message" id="signup-confirm-error"></div>
-                </div>
-                <button class="auth-button" id="signup-button">Sign Up</button>
-                <div class="auth-switch">
-                    Already have an account? <a id="show-login">Log in</a>
-                </div>
+                
+                <button type="submit" class="auth-btn" id="authBtn">Sign In</button>
+            </form>
+            
+            <div class="auth-switch">
+                <span id="authSwitchText">Don't have an account?</span>
+                <a href="#" id="authSwitchLink">Sign up</a>
             </div>
         </div>
     </div>
 
-    <!-- Main app container (hidden initially) -->
-    <div id="app-container" class="hidden">
-        <!-- Navbar -->
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <i class="fas fa-music"></i>
-                <span>SoundSpace</span>
+    <!-- Dashboard Content -->
+    <div id="dashboardContent" class="dashboard-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">SoundSpace</div>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search for users..." id="userSearchInput">
+                <button class="search-btn" onclick="searchUsers()">🔍</button>
             </div>
-            <div class="search-bar">
-                <input type="text" placeholder="Search for users..." id="search-input">
-                <button id="search-button"><i class="fas fa-search"></i></button>
+            <div class="user-menu">
+                <span id="currentUsername"></span>
+                <img id="userAvatar" class="user-avatar" src="" alt="User">
+                <button onclick="logout()" style="background: none; border: none; color: #888; cursor: pointer;">Logout</button>
             </div>
-            <div class="user-menu" id="user-menu">
-                <img id="user-avatar" src="https://via.placeholder.com/40" alt="User">
-                <span id="username-display"></span>
-            </div>
-        </nav>
+        </header>
 
-        <!-- Main content -->
-        <div class="main-content">
-            <!-- Sidebar -->
+        <!-- Main Container -->
+        <div class="main-container">
+            <!-- Left Sidebar -->
             <aside class="sidebar">
-                <div class="sidebar-section">
-                    <h3>Menu</h3>
-                    <ul>
-                        <li class="active"><a href="#" id="home-link"><i class="fas fa-home"></i> Home</a></li>
-                        <li><a href="#" id="friends-link"><i class="fas fa-user-friends"></i> Friends</a></li>
-                        <li><a href="#" id="notifications-link"><i class="fas fa-bell"></i> Notifications</a></li>
-                        <li><a href="#" id="settings-link"><i class="fas fa-cog"></i> Settings</a></li>
-                    </ul>
-                </div>
+                <nav class="menu-section">
+                    <div class="menu-title">Menu</div>
+                    <a href="#" class="menu-item active" onclick="showHome()">Home</a>
+                    <a href="#" class="menu-item" onclick="showFriends()">Friends</a>
+                    <a href="#" class="menu-item">Notifications</a>
+                    <a href="#" class="menu-item">Settings</a>
+                </nav>
                 
-                <div class="sidebar-section">
-                    <h3>Friend Suggestions</h3>
-                    <div class="suggestions-list" id="suggestions-list">
-                        <!-- Dynamically populated -->
-                    </div>
+                <div class="menu-section">
+                    <div class="menu-title">Friend Suggestions</div>
+                    <div id="friendSuggestions"></div>
                 </div>
             </aside>
 
-            <!-- Timeline -->
-            <main class="timeline">
-                <div class="post-creator">
-                    <img id="current-user-avatar" src="https://via.placeholder.com/50" alt="You">
-                    <input type="text" id="post-content" placeholder="What's on your mind? Share a song or thought...">
-                    <button class="post-button" id="create-post-button">Post</button>
+            <!-- Content Area -->
+            <main class="content" id="mainContent">
+                <div class="post-creation">
+                    <img id="postUserAvatar" class="user-avatar" src="" alt="You">
+                    <textarea class="post-input" placeholder="What's on your mind? Share a song or thought..." rows="1"></textarea>
+                    <button class="post-btn">Post</button>
                 </div>
                 
-                <div class="posts-container" id="posts-container">
-                    <!-- Posts will be dynamically inserted here -->
+                <div id="contentArea">
+                    <!-- Dynamic content will be loaded here -->
                 </div>
             </main>
 
-            <!-- Right sidebar -->
+            <!-- Right Sidebar -->
             <aside class="right-sidebar">
-                <div class="friends-list">
-                    <h3>Your Friends</h3>
-                    <div class="friends-container" id="friends-container">
-                        <!-- Friends will be dynamically inserted here -->
-                    </div>
+                <div class="friends-section">
+                    <h3 class="section-title">Your Friends</h3>
+                    <div id="friendsList"></div>
                 </div>
                 
-                <div class="mutual-friends">
-                    <h3>Mutual Connections</h3>
-                    <div class="mutual-container" id="mutual-container">
-                        <!-- Mutual friends will be shown when viewing a user's profile -->
-                    </div>
+                <div class="friends-section">
+                    <h3 class="section-title">Mutual Connections</h3>
+                    <div id="mutualConnections"></div>
                 </div>
             </aside>
         </div>
     </div>
 
     <script>
-        // Global state
-        const state = {
-            currentUser: null,
-            posts: [],
-            friends: [],
-            suggestions: [],
-            notifications: []
-        };
+        let authToken = localStorage.getItem('authToken');
+        let currentUser = localStorage.getItem('username');
+        let isLogin = true;
 
-        // DOM Elements
-        const authContainer = document.getElementById('auth-container');
-        const appContainer = document.getElementById('app-container');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        const loginButton = document.getElementById('login-button');
-        const signupButton = document.getElementById('signup-button');
-        const showLogin = document.getElementById('show-login');
-        const showSignup = document.getElementById('show-signup');
-        const loginTabs = document.querySelectorAll('.auth-tab');
-        const usernameDisplay = document.getElementById('username-display');
-        const userAvatar = document.getElementById('user-avatar');
-        const currentUserAvatar = document.getElementById('current-user-avatar');
-        const postsContainer = document.getElementById('posts-container');
-        const postContent = document.getElementById('post-content');
-        const createPostButton = document.getElementById('create-post-button');
-        const friendsContainer = document.getElementById('friends-container');
-        const suggestionsList = document.getElementById('suggestions-list');
-        const searchInput = document.getElementById('search-input');
-        const searchButton = document.getElementById('search-button');
-
-        // Mock data for demonstration
-        const mockUsers = [
-            { id: 1, username: 'musiclover', password: 'password123', avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=ML' },
-            { id: 2, username: 'songbird', password: 'password123', avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=SB' },
-            { id: 3, username: 'beatmaster', password: 'password123', avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=BM' },
-            { id: 4, username: 'melodyqueen', password: 'password123', avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=MQ' },
-            { id: 5, username: 'rhythmking', password: 'password123', avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=RK' }
-        ];
-
-        const mockPosts = [
-            { id: 1, userId: 2, content: "Just discovered this amazing new artist! Check them out!", timestamp: "2023-06-15T10:30:00" },
-            { id: 2, userId: 3, content: "Working on a new track. Can't wait to share it with you all!", timestamp: "2023-06-14T18:45:00" },
-            { id: 3, userId: 4, content: "What's everyone listening to today? I need some recommendations!", timestamp: "2023-06-14T12:15:00" },
-            { id: 4, userId: 5, content: "Music is the universal language of mankind. So true!", timestamp: "2023-06-13T09:20:00" }
-        ];
-
-        const mockFriends = [
-            { id: 2, username: 'songbird', mutualFriends: 3, avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=SB' },
-            { id: 3, username: 'beatmaster', mutualFriends: 2, avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=BM' },
-            { id: 4, username: 'melodyqueen', mutualFriends: 4, avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=MQ' }
-        ];
-
-        const mockSuggestions = [
-            { id: 5, username: 'rhythmking', mutualFriends: 2, avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=RK' },
-            { id: 6, username: 'harmonizer', mutualFriends: 1, avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=HZ' },
-            { id: 7, username: 'lyricist', mutualFriends: 3, avatar: 'https://via.placeholder.com/150/1DB954/FFFFFF?text=LY' }
-        ];
-
-        // Helper functions
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.textContent = message;
-            errorElement.style.display = 'block';
+        // Check if user is already logged in
+        if (authToken && currentUser) {
+            showDashboard();
         }
 
-        function hideError(elementId) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.style.display = 'none';
-        }
+        // Auth form elements
+        const authForm = document.getElementById('authForm');
+        const authTitle = document.getElementById('authTitle');
+        const authBtn = document.getElementById('authBtn');
+        const authSwitchText = document.getElementById('authSwitchText');
+        const authSwitchLink = document.getElementById('authSwitchLink');
+        const messageDiv = document.getElementById('message');
 
-        function getUserById(id) {
-            return mockUsers.find(user => user.id === id);
-        }
+        // Toggle between login and signup
+        authSwitchLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            isLogin = !isLogin;
+            
+            if (isLogin) {
+                authTitle.textContent = 'Sign in to continue';
+                authBtn.textContent = 'Sign In';
+                authSwitchText.textContent = "Don't have an account?";
+                authSwitchLink.textContent = 'Sign up';
+            } else {
+                authTitle.textContent = 'Create your account';
+                authBtn.textContent = 'Sign Up';
+                authSwitchText.textContent = 'Already have an account?';
+                authSwitchLink.textContent = 'Sign in';
+            }
+            
+            messageDiv.innerHTML = '';
+        });
 
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleString();
-        }
-
-        // Auth functions
-        function handleLogin() {
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
-
-    fetch('http://localhost:18080/api/login', {
-
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Invalid credentials");
-        return res.json();
-    })
-    .then(data => {
-        state.currentUser = {
-            username: data.username,
-            avatar: data.avatar
-        };
-        usernameDisplay.textContent = data.username;
-        userAvatar.src = data.avatar;
-        currentUserAvatar.src = data.avatar;
-
-        authContainer.classList.add('hidden');
-        appContainer.classList.remove('hidden');
-        loadAppData();
-    })
-    .catch(err => {
-        showError('login-password-error', err.message);
-    });
-}
-
-function handleSignup() {
-    const username = document.getElementById('signup-username').value;
-    const password = document.getElementById('signup-password').value;
-    const confirm = document.getElementById('signup-confirm').value;
-
-    // Reset errors
-    hideError('signup-username-error');
-    hideError('signup-password-error');
-    hideError('signup-confirm-error');
-
-    // Basic client-side validation
-    if (!username) {
-        showError('signup-username-error', 'Username is required');
-        return;
-    }
-
-    if (username.length < 3) {
-        showError('signup-username-error', 'Username must be at least 3 characters');
-        return;
-    }
-
-    if (!password) {
-        showError('signup-password-error', 'Password is required');
-        return;
-    }
-
-    if (password.length < 6) {
-        showError('signup-password-error', 'Password must be at least 6 characters');
-        return;
-    }
-
-    if (password !== confirm) {
-        showError('signup-confirm-error', 'Passwords do not match');
-        return;
-    }
-
-    // Create JSON data
-    const data = JSON.stringify({
-        username: username,
-        password: password
-    });
-
-    // Send using XMLHttpRequest
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:18080/api/signup', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onload = function() {
-        if (xhr.status === 200) {
+        // Handle auth form submission
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const endpoint = isLogin ? '/api/login' : '/api/signup';
+            
             try {
-                const data = JSON.parse(xhr.responseText);
-                state.currentUser = {
-                    username: data.username,
-                    avatar: data.avatar
-                };
-                usernameDisplay.textContent = data.username;
-                userAvatar.src = data.avatar;
-                currentUserAvatar.src = data.avatar;
-
-                loadAppData(); // Load mock friends/posts
-
-                authContainer.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-            } catch (e) {
-                showError('signup-username-error', 'Invalid server response');
+                const response = await fetch(`http://localhost:18080${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('username', data.username);
+                    localStorage.setItem('userAvatar', data.avatar);
+                    showMessage('Success! Redirecting...', 'success');
+                    setTimeout(() => showDashboard(), 1000);
+                } else {
+                    showMessage(data.message || 'Authentication failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Network error. Please try again.', 'error');
+                console.error('Auth error:', error);
             }
-        } else {
-            showError('signup-username-error', 'Username might be taken or error occurred');
+        });
+
+        function showMessage(message, type) {
+            messageDiv.innerHTML = `<div class="message ${type}">${message}</div>`;
         }
-    };
 
-    xhr.onerror = function() {
-        showError('signup-username-error', 'Network error occurred');
-    };
+        function showDashboard() {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            
+            // Set user info
+            document.getElementById('currentUsername').textContent = localStorage.getItem('username');
+            const avatarUrl = localStorage.getItem('userAvatar');
+            document.getElementById('userAvatar').src = avatarUrl;
+            document.getElementById('postUserAvatar').src = avatarUrl;
+            
+            // Load initial data
+            loadFriends();
+            loadFriendSuggestions();
+            loadAllUsers();
+        }
 
-    xhr.send(data);
+        async function searchUsers() {
+            const searchInput = document.getElementById('userSearchInput').value.trim();
+            
+            if (!searchInput) {
+                loadAllUsers();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:18080/api/users/search/${searchInput}`, {
+                    headers: {
+                        'Authorization': localStorage.getItem('authToken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayUsers(data.users);
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+            }
+        }
+
+    async function loadAllUsers() {
+    try {
+        // Get all users
+        const response = await fetch('http://localhost:18080/api/users', {
+            headers: {
+                'Authorization': localStorage.getItem('authToken')
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            let pendingRequests = [];
+            let sentRequests = [];
+            
+            // Get pending friend requests (received)
+            try {
+                const pendingResponse = await fetch('http://localhost:18080/api/friend-requests/pending', {
+                    headers: { 'Authorization': localStorage.getItem('authToken') }
+                });
+                
+                const pendingData = await pendingResponse.json();
+                if (pendingData.success && pendingData.requests) {
+                    pendingRequests = pendingData.requests;
+                }
+            } catch (error) {
+                console.error('Error fetching pending requests:', error);
+            }
+            
+            // Get sent friend requests
+            try {
+                const sentResponse = await fetch('http://localhost:18080/api/friend-requests/sent', {
+                    headers: { 'Authorization': localStorage.getItem('authToken') }
+                });
+                
+                const sentData = await sentResponse.json();
+                if (sentData.success && sentData.requests) {
+                    sentRequests = sentData.requests;
+                }
+            } catch (error) {
+                console.error('Error fetching sent requests:', error);
+            }
+            
+            // Display users with correct status
+            displayUsers(data.users, pendingRequests, sentRequests);
+        }
+    } catch (error) {
+        console.error('Load users error:', error);
+        alert('Failed to load users. Please check console for details.');
+    }
 }
 
-
-        function switchToLogin() {
-            document.querySelector('.auth-tab[data-tab="login"]').classList.add('active');
-            document.querySelector('.auth-tab[data-tab="signup"]').classList.remove('active');
-            loginForm.classList.add('active');
-            signupForm.classList.remove('active');
-        }
-
-        function switchToSignup() {
-            document.querySelector('.auth-tab[data-tab="signup"]').classList.add('active');
-            document.querySelector('.auth-tab[data-tab="login"]').classList.remove('active');
-            signupForm.classList.add('active');
-            loginForm.classList.remove('active');
-        }
-
-        // App functions
-        function loadAppData() {
-            // In a real app, these would be API calls
-            state.posts = [...mockPosts];
-            state.friends = [...mockFriends];
-            state.suggestions = [...mockSuggestions];
+    function displayUsers(users, pendingRequests = [], sentRequests = []) {
+    const contentArea = document.getElementById('contentArea');
+    contentArea.innerHTML = ''; // Clear previous content
+    
+    if (!users || users.length === 0) {
+        contentArea.innerHTML = '<p style="color: #888; text-align: center;">No users found.</p>';
+        return;
+    }
+    
+    // Create container
+    const container = document.createElement('div');
+    container.className = 'users-list';
+    
+    // Extract usernames from pending requests if they're objects
+    const pendingUsernames = pendingRequests.map(req => 
+        typeof req === 'object' ? req.username : req
+    );
+    
+    // 1. Show pending requests section
+    if (pendingRequests.length > 0) {
+        const pendingHeader = document.createElement('h3');
+        pendingHeader.style.color = '#1DB954';
+        pendingHeader.style.marginBottom = '1rem';
+        pendingHeader.textContent = 'Pending Friend Requests';
+        container.appendChild(pendingHeader);
+        
+        pendingRequests.forEach(request => {
+            const username = typeof request === 'object' ? request.username : request;
+            const avatar = typeof request === 'object' ? request.avatar : 
+                `https://via.placeholder.com/150/1DB954/FFFFFF?text=${username.charAt(0)}`;
             
-            renderPosts();
-            renderFriends();
-            renderSuggestions();
-        }
-
-        function renderPosts() {
-            postsContainer.innerHTML = '';
-            
-            if (state.posts.length === 0) {
-                postsContainer.innerHTML = '<p>No posts to display. Start following people to see their posts!</p>';
-                return;
-            }
-            
-            state.posts.forEach(post => {
-                const user = getUserById(post.userId);
-                if (!user) return;
-                
-                const postElement = document.createElement('div');
-                postElement.className = 'post';
-                postElement.innerHTML = `
-                    <div class="post-header">
-                        <img src="${user.avatar}" alt="${user.username}">
-                        <div class="post-user-info">
-                            <h4>${user.username}</h4>
-                            <p>${formatDate(post.timestamp)}</p>
-                        </div>
-                    </div>
-                    <div class="post-content">
-                        ${post.content}
-                    </div>
-                    <div class="post-actions">
-                        <div class="post-action">
-                            <i class="far fa-heart"></i>
-                            <span>Like</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="far fa-comment"></i>
-                            <span>Comment</span>
-                        </div>
-                        <div class="post-action">
-                            <i class="fas fa-share"></i>
-                            <span>Share</span>
-                        </div>
-                    </div>
-                `;
-                
-                postsContainer.appendChild(postElement);
-            });
-        }
-
-        function renderFriends() {
-            friendsContainer.innerHTML = '';
-            
-            if (state.friends.length === 0) {
-                friendsContainer.innerHTML = '<p>You have no friends yet. Start adding some!</p>';
-                return;
-            }
-            
-            state.friends.forEach(friend => {
-                const friendElement = document.createElement('div');
-                friendElement.className = 'friend-card';
-                friendElement.innerHTML = `
-                    <img src="${friend.avatar}" alt="${friend.username}">
-                    <div class="friend-info">
-                        <h4>${friend.username}</h4>
-                        <p>${friend.mutualFriends} mutual friends</p>
-                    </div>
-                `;
-                
-                friendsContainer.appendChild(friendElement);
-            });
-        }
-
-        function renderSuggestions() {
-            suggestionsList.innerHTML = '';
-            
-            if (state.suggestions.length === 0) {
-                suggestionsList.innerHTML = '<p>No suggestions available</p>';
-                return;
-            }
-            
-            state.suggestions.forEach(suggestion => {
-                const suggestionElement = document.createElement('div');
-                suggestionElement.className = 'suggestion-card';
-                suggestionElement.innerHTML = `
-                    <img src="${suggestion.avatar}" alt="${suggestion.username}">
-                    <div class="suggestion-info">
-                        <h4>${suggestion.username}</h4>
-                        <p>${suggestion.mutualFriends} mutual friends</p>
-                        <button class="add-friend-btn">Add Friend</button>
-                    </div>
-                `;
-                
-                suggestionsList.appendChild(suggestionElement);
-            });
-        }
-
-        function createPost() {
-            const content = postContent.value.trim();
-            
-            if (!content) {
-                alert('Post content cannot be empty');
-                return;
-            }
-            
-            // In a real app, this would be an API call
-            const newPost = {
-                id: state.posts.length + 1,
-                userId: state.currentUser.id,
-                content,
-                timestamp: new Date().toISOString()
-            };
-            
-            state.posts.unshift(newPost);
-            postContent.value = '';
-            renderPosts();
-        }
-
-        function searchUsers() {
-            const query = searchInput.value.trim().toLowerCase();
-            
-            if (!query) {
-                alert('Please enter a search term');
-                return;
-            }
-            
-            // In a real app, this would be an API call
-            const results = mockUsers.filter(user => 
-                user.username.toLowerCase().includes(query)
+            const card = createUserCard(
+                username,
+                avatar,
+                'Sent you a friend request',
+                true
             );
+            container.appendChild(card);
+        });
+        
+        const divider = document.createElement('hr');
+        divider.style.margin = '2rem 0';
+        divider.style.borderColor = '#333';
+        container.appendChild(divider);
+    }
+    
+    // 2. Show all users header
+    const usersHeader = document.createElement('h3');
+    usersHeader.style.marginBottom = '1rem';
+    usersHeader.textContent = 'All Users';
+    container.appendChild(usersHeader);
+    
+    // 3. Show all users
+    users.forEach(user => {
+        // Skip users that are already shown in pending requests
+        if (pendingUsernames.includes(user.username)) {
+            return;
+        }
+        
+        const isSentRequest = sentRequests.includes(user.username);
+        
+        let status = 'Active user';
+        let action = 'Add Friend';
+        let onClick = `sendFriendRequest('${user.username}')`;
+        let btnClass = 'friend-btn';
+        
+        if (user.status === 'friend') {
+            status = 'Friend';
+            action = 'Friends';
+            onClick = `removeFriend('${user.username}')`;
+            btnClass += ' friend';
+        } else if (isSentRequest) {
+            status = 'Request sent';
+            action = 'Cancel Request';
+            onClick = `cancelFriendRequest('${user.username}')`;
+            btnClass += ' pending';
+        }
+        
+        const card = createUserCard(
+            user.username,
+            user.avatar,
+            status,
+            false,
+            action,
+            onClick,
+            btnClass
+        );
+        
+        container.appendChild(card);
+    });
+    
+    contentArea.appendChild(container);
+}
+
+    function createUserCard(username, avatar, status, isPending, action = '', onClick = '', btnClass = '') {
+        const card = document.createElement('div');
+        card.className = 'user-card';
+        if (isPending) card.style.border = '1px solid #1DB954';
+        
+        // Avatar
+        const avatarImg = document.createElement('img');
+        avatarImg.src = avatar;
+        avatarImg.alt = username;
+        avatarImg.className = 'user-avatar-small';
+        
+        // User info
+        const userInfo = document.createElement('div');
+        userInfo.className = 'user-info';
+        
+        const name = document.createElement('div');
+        name.className = 'user-name';
+        name.textContent = username;
+        
+        const statusEl = document.createElement('div');
+        statusEl.className = 'user-status';
+        statusEl.textContent = status;
+        if (isPending) statusEl.style.color = '#1DB954';
+        
+        userInfo.appendChild(name);
+        userInfo.appendChild(statusEl);
+        
+        // Action buttons
+        const actionContainer = document.createElement('div');
+        
+        if (isPending) {
+            // Pending request card with Accept/Reject buttons
+            actionContainer.style.display = 'flex';
+            actionContainer.style.gap = '0.5rem';
             
-            if (results.length === 0) {
-                alert('No users found matching your search');
-                return;
+            const acceptBtn = document.createElement('button');
+            acceptBtn.className = 'friend-btn';
+            acceptBtn.textContent = 'Accept';
+            acceptBtn.onclick = () => acceptFriendRequest(username);
+            
+            const rejectBtn = document.createElement('button');
+            rejectBtn.className = 'friend-btn pending';
+            rejectBtn.textContent = 'Reject';
+            rejectBtn.onclick = () => rejectFriendRequest(username);
+            
+            actionContainer.appendChild(acceptBtn);
+            actionContainer.appendChild(rejectBtn);
+        } else if (action) {
+            // Regular user card with action button
+            const actionBtn = document.createElement('button');
+            actionBtn.className = btnClass;
+            actionBtn.textContent = action;
+            if (onClick) actionBtn.onclick = new Function(onClick);
+            actionContainer.appendChild(actionBtn);
+        }
+        
+        // Assemble card
+        card.appendChild(avatarImg);
+        card.appendChild(userInfo);
+        card.appendChild(actionContainer);
+        
+        return card;
+    }
+    // Add this debug function to login.html
+async function debugCheckFriendsSorting() {
+    try {
+        const response = await fetch('http://localhost:18080/api/friends', {
+            headers: {
+                'Authorization': localStorage.getItem('authToken')
             }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log('=== Friends List Debug ===');
+            console.log('Current user:', localStorage.getItem('username'));
+            console.log('Number of friends:', data.friends.length);
+            console.log('Friends in order returned by API:', data.friends);
             
-            // For demo purposes, we'll just show an alert
-            const usernames = results.map(user => user.username).join(', ');
-            alert(`Found users: ${usernames}`);
+            // Check if sorted alphabetically
+            const sortedFriends = [...data.friends].sort((a, b) => a.localeCompare(b));
+            const isSorted = JSON.stringify(data.friends) === JSON.stringify(sortedFriends);
+            
+            console.log('Expected alphabetical order:', sortedFriends);
+            console.log('Is correctly sorted:', isSorted);
+            
+            if (!isSorted) {
+                console.log('WARNING: Friends are NOT in alphabetical order!');
+                for (let i = 0; i < data.friends.length; i++) {
+                    if (data.friends[i] !== sortedFriends[i]) {
+                        console.log(`Mismatch at index ${i}: got "${data.friends[i]}", expected "${sortedFriends[i]}"`);
+                    }
+                }
+            }
+            console.log('========================');
+        }
+    } catch (error) {
+        console.error('Debug error:', error);
+    }
+}
+
+// Call this function in the console or add a button to trigger it
+
+        async function cancelFriendRequest(receiver) {
+    try {
+        const response = await fetch('http://localhost:18080/api/friend-request/cancel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': localStorage.getItem('authToken')
+            },
+            body: JSON.stringify({ receiver })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Friend request canceled!');
+            loadAllUsers(); // Refresh the list
+        } else {
+            alert(data.message || 'Failed to cancel friend request');
+        }
+    } catch (error) {
+        console.error('Cancel request error:', error);
+        alert('Network error. Please try again.');
+    }
+}
+
+        async function acceptFriendRequest(sender) {
+            try {
+                const response = await fetch('http://localhost:18080/api/friend-request/accept', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ sender })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend request accepted!');
+                    loadAllUsers();
+                    loadFriends();
+                } else {
+                    alert(data.message || 'Failed to accept friend request');
+                }
+            } catch (error) {
+                console.error('Accept request error:', error);
+                alert('Network error. Please try again.');
+            }
         }
 
-        // Event listeners
-        loginButton.addEventListener('click', handleLogin);
-        signupButton.addEventListener('click', handleSignup);
-        showLogin.addEventListener('click', switchToLogin);
-        showSignup.addEventListener('click', switchToSignup);
-        createPostButton.addEventListener('click', createPost);
-        searchButton.addEventListener('click', searchUsers);
-        
-        // Allow creating post with Enter key
-        postContent.addEventListener('keypress', (e) => {
+        async function rejectFriendRequest(sender) {
+            try {
+                const response = await fetch('http://localhost:18080/api/friend-request/reject', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ sender })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend request rejected');
+                    loadAllUsers();
+                } else {
+                    alert(data.message || 'Failed to reject friend request');
+                }
+            } catch (error) {
+                console.error('Reject request error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        async function sendFriendRequest(receiver) {
+            try {
+                const response = await fetch('http://localhost:18080/api/friend-request/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ receiver })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend request sent!');
+                    loadAllUsers(); // Refresh the list
+                } else {
+                    alert(data.message || 'Failed to send friend request');
+                }
+            } catch (error) {
+                console.error('Friend request error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        async function removeFriend(friend) {
+            if (!confirm(`Remove ${friend} from your friends?`)) return;
+            
+            try {
+                const response = await fetch('http://localhost:18080/api/friends/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ friend })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend removed');
+                    loadAllUsers();
+                    loadFriends();
+                } else {
+                    alert(data.message || 'Failed to remove friend');
+                }
+            } catch (error) {
+                console.error('Remove friend error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
+
+        async function loadFriends() {
+            try {
+                const response = await fetch('http://localhost:18080/api/friends', {
+                    headers: {
+                        'Authorization': localStorage.getItem('authToken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const friendsList = document.getElementById('friendsList');
+                    
+                    if (data.friends.length === 0) {
+                        friendsList.innerHTML = '<p style="color: #888; font-size: 0.9rem;">No friends yet</p>';
+                    } else {
+                        let html = '';
+                        data.friends.forEach(friend => {
+                            html += `
+                                <div class="user-card" style="padding: 0.75rem; margin-bottom: 0.5rem;">
+                                    <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friend.charAt(0)}" 
+                                         alt="${friend}" class="user-avatar-small" style="width: 40px; height: 40px;">
+                                    <div class="user-info">
+                                        <div class="user-name" style="font-size: 0.9rem;">${friend}</div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        friendsList.innerHTML = html;
+                    }
+                }
+            } catch (error) {
+                console.error('Load friends error:', error);
+            }
+        }
+
+        async function loadFriendSuggestions() {
+            try {
+                const response = await fetch('http://localhost:18080/api/friends/suggestions', {
+                    headers: {
+                        'Authorization': localStorage.getItem('authToken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const suggestionsDiv = document.getElementById('friendSuggestions');
+                    
+                    if (data.suggestions.length === 0) {
+                        suggestionsDiv.innerHTML = '<p style="color: #888; font-size: 0.9rem;">No suggestions available</p>';
+                    } else {
+                        let html = '';
+                        data.suggestions.slice(0, 5).forEach(suggestion => {
+                            html += `
+                                <div class="menu-item" onclick="sendFriendRequest('${suggestion}')" style="cursor: pointer;">
+                                    <span>${suggestion}</span>
+                                </div>
+                            `;
+                        });
+                        suggestionsDiv.innerHTML = html;
+                    }
+                }
+            } catch (error) {
+                console.error('Load suggestions error:', error);
+            }
+        }
+
+        function showHome() {
+            loadAllUsers();
+            // Update active menu
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function showFriends() {
+            const contentArea = document.getElementById('contentArea');
+            contentArea.innerHTML = '<h2>Your Friends</h2>';
+            
+            // Update active menu
+            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Load and display friends
+            loadFriendsPage();
+        }
+
+        async function loadFriendsPage() {
+            try {
+                const response = await fetch('http://localhost:18080/api/friends', {
+                    headers: {
+                        'Authorization': localStorage.getItem('authToken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const contentArea = document.getElementById('contentArea');
+                    let html = '<h2>Your Friends</h2><div class="users-list">';
+                    
+                    if (data.friends.length === 0) {
+                        html += '<p style="color: #888; text-align: center;">You have no friends yet. Start by searching for users!</p>';
+                    } else {
+                        data.friends.forEach(friend => {
+                            html += `
+                                <div class="user-card">
+                                    <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friend.charAt(0)}" 
+                                         alt="${friend}" class="user-avatar-small">
+                                    <div class="user-info">
+                                        <div class="user-name">${friend}</div>
+                                        <div class="user-status">Friend</div>
+                                    </div>
+                                    <button class="friend-btn friend" onclick="removeFriend('${friend}')">Remove Friend</button>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    html += '</div>';
+                    contentArea.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Load friends page error:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('username');
+            localStorage.removeItem('userAvatar');
+            location.reload();
+        }
+
+        // Add event listener for Enter key on search input
+        document.getElementById('userSearchInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                createPost();
+                searchUsers();
             }
         });
-        
-        // Tab switching
-        loginTabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                if (tabName === 'login') {
-                    switchToLogin();
-                } else {
-                    switchToSignup();
-                }
-            });
-        });
-        
-        // Initialize
-        switchToLogin();
-        window.addEventListener('DOMContentLoaded', () => {
-    if (window.location.hash === '#signup') {
-        switchToSignup();
-    }
 
-    window.addEventListener('DOMContentLoaded', () => {
-    if (window.location.hash === '#signup') {
-        switchToSignup();
-    }
-});
+        // Debug function to check all users
+        async function debugUsers() {
+            try {
+                const response = await fetch('http://localhost:18080/api/debug/users');
+                const data = await response.json();
+                console.log('All registered users:', data);
+            } catch (error) {
+                console.error('Debug error:', error);
+            }
+        }
 
-});
+        // Debug function to check friend requests
+        async function debugFriendRequests() {
+            try {
+                const response = await fetch('http://localhost:18080/api/debug/friend-requests');
+                const data = await response.json();
+                console.log('All friend requests:', data);
+            } catch (error) {
+                console.error('Debug error:', error);
+            }
+        }
+
+        // Refresh data periodically
+        setInterval(() => {
+            if (authToken && currentUser) {
+                loadAllUsers();
+                loadFriends();
+                loadFriendSuggestions();
+            }
+        }, 5000); // Refresh every 5 seconds
     </script>
 </body>
 </html>

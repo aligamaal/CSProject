@@ -1,6 +1,6 @@
 #define CROW_USE_ASIO
 #include "AuthManager.h"
-#include "crow_all.h"
+#include "crow.h"
 #include "User.h"
 #include <unordered_map>
 #include <mutex>
@@ -26,27 +26,25 @@ string AuthManager::generateToken(){
 bool AuthManager::registerUser(const string& username , const string& password){
     lock_guard<mutex> lock(data_mutex);
         if (users.count(username)) return false;
+
+
         users.emplace(username, User(username, password));
         return true;
 }
-string AuthManager::loginUser(const string& username , const string& password){
+string AuthManager::loginUser(const string& username, const string& password){
     lock_guard<mutex> lock(data_mutex);
-        auto it = users.find(username);
-        if (it == users.end() || !it->second.checkPassword(password))
-            return "";
-            const string& userSalt = it->second.getSalt();
-     uint64_t computedHash = User::hashPasswordWithSalt(password,userSalt);
+    auto it = users.find(username);
+    if (it == users.end()) {
+        return ""; // User not found
+    }
     
-     cout << "Stored hash: " << it->second.getHashPassword() << endl;
-     cout << "Computed hash: " << computedHash << endl;
-     cout << "Match: " << (it->second.getHashPassword() == computedHash) << endl;
-    
-    if (!it->second.checkPassword(password))
-        return "";
+    if (!it->second.checkPassword(password)) {
+        return ""; // Wrong password
+    }
 
-        string token = generateToken();
-        sessions[token] = username;
-        return token;
+    string token = generateToken();
+    sessions[token] = username;
+    return token;
 }
 string* AuthManager::getUsernameFromToken(const string& token){
     lock_guard<mutex> lock(data_mutex);

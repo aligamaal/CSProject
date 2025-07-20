@@ -8,7 +8,9 @@ add_executable(my_app
     "Source Files/AuthManager.cpp"        # Add this if it exists
     "Source Files/CORSMiddleware.cpp"     # Add this if it exists
     "Source Files/Utils.cpp" 
-    "Source Files/User.cpp"              # Add this if getMimeType is here
+    "Source Files/User.cpp"
+    "Source Files/AVLTree.cpp"
+    "Source Files/SocialNetworkManager.cpp"              # Add this if getMimeType is here
     # Add any other .cpp files you have
 )
 
