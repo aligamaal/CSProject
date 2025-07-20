@@ -1,6 +1,5 @@
 #include "CORSMiddleware.h"
 #define CROW_USE_ASIO
-#include "crow_all.h"
 #include "crow.h"
 #include <unordered_map>
 #include <mutex>
