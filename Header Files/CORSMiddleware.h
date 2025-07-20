@@ -2,7 +2,7 @@
 #ifndef CORSMIDDLEWARE_H
 #define CORSMIDDLEWARE_H
 
-#include "crow_all.h"
+#include "crow.h"
 #include <unordered_map>
 #include <mutex>
 #include <string>
