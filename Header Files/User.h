@@ -13,21 +13,27 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <functional>
+#include "AVLTree.h"
 using namespace std;
 class User {
-    private:
+private:
     string userName;
     string salt;
     size_t hashPassword;
 
-    public:
-    User(const string& , const string&);
-    uint64_t getHashPassword();
+public:
+    AVLTree<std::string> friends;
+    User();
+    User(const string&, const string&);
+    size_t getHashPassword();
     bool checkPassword(const string&) const;
     string generateSalt();
     string getSalt();
-    static uint64_t hashPasswordWithSalt(const string& , const string&);
+    static size_t hashPasswordWithSalt(const string&, const string&);
+    void addFriend(string friendName);
+    void removeFriend(string friendName);
+    bool isFriendWith(string friendName);
+    std::vector<string> getFriendsList();
 };
 #endif
-
-

@@ -634,8 +634,7 @@
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
-    fetch('http://localhost:18080/api/login', {
-
+    fetch('/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
@@ -662,7 +661,8 @@
     });
 }
 
-function handleSignup() {
+
+        function handleSignup() {
     const username = document.getElementById('signup-username').value;
     const password = document.getElementById('signup-password').value;
     const confirm = document.getElementById('signup-confirm').value;
@@ -698,46 +698,33 @@ function handleSignup() {
         return;
     }
 
-    // Create JSON data
-    const data = JSON.stringify({
-        username: username,
-        password: password
+    // Send signup request to Crow backend
+    fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+    })
+    .then(res => {
+        if (!res.ok) throw new Error('Username might be taken or error occurred');
+        return res.json();
+    })
+    .then(data => {
+        state.currentUser = {
+            username: data.username,
+            avatar: data.avatar
+        };
+        usernameDisplay.textContent = data.username;
+        userAvatar.src = data.avatar;
+        currentUserAvatar.src = data.avatar;
+
+        loadAppData(); // Load mock friends/posts
+
+        authContainer.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+    })
+    .catch(err => {
+        showError('signup-username-error', err.message);
     });
-
-    // Send using XMLHttpRequest
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://localhost:18080/api/signup', true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-
-    xhr.onload = function() {
-        if (xhr.status === 200) {
-            try {
-                const data = JSON.parse(xhr.responseText);
-                state.currentUser = {
-                    username: data.username,
-                    avatar: data.avatar
-                };
-                usernameDisplay.textContent = data.username;
-                userAvatar.src = data.avatar;
-                currentUserAvatar.src = data.avatar;
-
-                loadAppData(); // Load mock friends/posts
-
-                authContainer.classList.add('hidden');
-                appContainer.classList.remove('hidden');
-            } catch (e) {
-                showError('signup-username-error', 'Invalid server response');
-            }
-        } else {
-            showError('signup-username-error', 'Username might be taken or error occurred');
-        }
-    };
-
-    xhr.onerror = function() {
-        showError('signup-username-error', 'Network error occurred');
-    };
-
-    xhr.send(data);
 }
 
 

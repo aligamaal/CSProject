@@ -422,6 +422,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\CORSMiddleware.cpp" />
     <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\Utils.cpp" />
     <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\User.cpp" />
+    <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\AVLTree.cpp" />
+    <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\SocialNetworkManager.cpp" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -5,10 +5,12 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_executable(my_app 
     "Source Files/main.cpp"
-    "Source Files/AuthManager.cpp"        # Add this if it exists
-    "Source Files/CORSMiddleware.cpp"     # Add this if it exists
+    "Source Files/AuthManager.cpp"        
+    "Source Files/CORSMiddleware.cpp"   
     "Source Files/Utils.cpp" 
-    "Source Files/User.cpp"              # Add this if getMimeType is here
+    "Source Files/User.cpp"
+    "Source Files/AVLTree.cpp"
+    "Source Files/SocialNetworkManager.cpp"             
     # Add any other .cpp files you have
 )
 
