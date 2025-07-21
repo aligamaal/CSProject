@@ -8,6 +8,7 @@
 #include <iostream>
 #include "User.h"
 #include "crow.h"  // Add this for crow::json
+#include "AVLTree.h"
 
 using namespace std;
 
@@ -20,6 +21,7 @@ private:
     
     // Internal helper method
     bool areFriendsInternal(string user1, string user2);
+    crow::json::wvalue convertTreeToJSON(AVLNode<std::string>* node);
 
 public:
     void registerUser(string username, string password);
@@ -41,6 +43,16 @@ public:
     vector<string> getSentRequests(string username);
    std::pair<std::unordered_map<std::string, std::vector<std::string>>, 
           std::unordered_map<std::string, std::vector<std::string>>> getAllFriendRequests();  // Add this
+           struct AVLTreeInfo {
+        crow::json::wvalue treeStructure;
+        int height;
+        int nodeCount;
+        bool isBalanced;
+        std::string visualRepresentation;
+    };
+    
+    AVLTreeInfo getUserAVLTreeInfo(const std::string& username);
+
 };
 
 #endif

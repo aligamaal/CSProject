@@ -36,5 +36,11 @@ public:
     void removeFriend(const string& friendName);
     bool isFriendWith(const string& friendName);
     vector<string> getFriendsList() const;
+    AVLTree<std::string>* getFriendsTree() { 
+        return &friends; 
+    }
+    const AVLTree<std::string>* getFriendsTree() const { 
+        return &friends; 
+    }
 };
 #endif

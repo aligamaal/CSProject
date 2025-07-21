@@ -47,68 +47,192 @@ int main()
     });
 
     // Signup endpoint with JSON error responses
-    CROW_ROUTE(app, "/api/signup").methods("POST"_method, "OPTIONS"_method)
-    ([auth, socialNetwork](const crow::request& req) {
-        crow::response res;
-        res.set_header("Content-Type", "application/json");
-        
-        // Handle CORS preflight
-        if (req.method == "OPTIONS"_method) {
-            res.add_header("Access-Control-Allow-Methods", "POST, OPTIONS");
-            res.add_header("Access-Control-Allow-Headers", "Content-Type");
-            res.add_header("Access-Control-Allow-Origin", "*");
-            return res;
-        }
-
-        auto body = crow::json::load(req.body);
-        crow::json::wvalue result;
-        
-        if (!body) {
-            res.code = 400;
-            result["success"] = false;
-            result["message"] = "Invalid JSON";
-            res.write(result.dump());
-            return res;
-        }
-
-        if (!body.has("username") || !body.has("password")) {
-            res.code = 400;
-            result["success"] = false;
-            result["message"] = "Missing username or password";
-            res.write(result.dump());
-            return res;
-        }
-
-        try {
-            std::string username = body["username"].s();
-            std::string password = body["password"].s();
-            bool success = auth->registerUser(username, password);
-
-            if (success) {
-                // Also register in social network
-                socialNetwork->registerUser(username, password);
-                string token = auth->loginUser(username, password);
-                
-                result["success"] = true;
-                result["username"] = username;
-                result["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + username.substr(0, 1);
-                result["token"] = token;
-                res.code = 200;
-            } else {
-                result["success"] = false;
-                result["message"] = "Username already exists";
-                res.code = 409;
-            }
-        } catch (const std::exception& e) {
-            res.code = 500;
-            result["success"] = false;
-            result["message"] = "Internal server error";
-        }
-
+    // Main.cpp - Signup endpoint
+CROW_ROUTE(app, "/api/signup").methods("POST"_method, "OPTIONS"_method)
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    // Handle CORS preflight
+    if (req.method == "OPTIONS"_method) {
+        res.add_header("Access-Control-Allow-Methods", "POST, OPTIONS");
+        res.add_header("Access-Control-Allow-Headers", "Content-Type");
         res.add_header("Access-Control-Allow-Origin", "*");
+        return res;
+    }
+
+    auto body = crow::json::load(req.body);
+    crow::json::wvalue result;
+    
+    if (!body) {
+        res.code = 400;
+        result["success"] = false;
+        result["message"] = "Invalid JSON";
         res.write(result.dump());
         return res;
-    });
+    }
+
+    if (!body.has("username") || !body.has("password")) {
+        res.code = 400;
+        result["success"] = false;
+        result["message"] = "Missing username or password";
+        res.write(result.dump());
+        return res;
+    }
+
+    try {
+        std::string username = body["username"].s();
+        std::string password = body["password"].s();
+        bool success = auth->registerUser(username, password);
+
+        if (success) {
+            // FIX: Gracefully handle social network registration
+            try {
+                // This won't throw anymore for existing users
+                socialNetwork->registerUser(username, password);
+            } catch (const std::exception& e) {
+                // Log but don't fail signup
+                std::cout << "[INFO] Social network registration: " << e.what() 
+                          << " (user was still created in auth system)" << std::endl;
+            }
+            
+            string token = auth->loginUser(username, password);
+            
+            result["success"] = true;
+            result["username"] = username;
+            result["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + username.substr(0, 1);
+            result["token"] = token;
+            res.code = 200;
+        } else {
+            result["success"] = false;
+            result["message"] = "Username already exists";
+            res.code = 409;
+        }
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = "Internal server error";
+        // Log the actual error for debugging
+        std::cerr << "[ERROR] Signup exception: " << e.what() << std::endl;
+    }
+
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+// Add this endpoint to your main.cpp file, after the other routes but before app.port(18080).multithreaded().run();
+
+// Debug endpoint for AVL tree visualization
+// Add this complete endpoint to your main.cpp file, before app.port(18080).multithreaded().run();
+
+// Debug endpoint for AVL tree visualization
+CROW_ROUTE(app, "/api/debug/avl-tree/<string>").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req, string username) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    // Optional: Add authentication check
+    string token = req.get_header_value("Authorization");
+    string* currentUser = auth->getUsernameFromToken(token);
+    
+    if (!currentUser) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+     try {
+        auto treeInfo = socialNetwork->getUserAVLTreeInfo(username);
+        
+        result["success"] = true;
+        result["username"] = username;
+        result["tree"] = std::move(treeInfo.treeStructure); // Use std::move
+        result["height"] = treeInfo.height;
+        result["count"] = treeInfo.nodeCount;
+        result["isBalanced"] = treeInfo.isBalanced;
+        result["visual"] = std::move(treeInfo.visualRepresentation); // Use std::move
+        
+        // Add the friends list for verification
+        auto friends = socialNetwork->getFriends(username);
+        crow::json::wvalue friendsArray;
+        for (size_t i = 0; i < friends.size(); ++i) {
+            friendsArray[i] = friends[i];
+        }
+        result["friendsList"] = std::move(friendsArray);
+        
+        res.code = 200;
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error getting AVL tree info: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
+// Additional debug endpoint to check all users' AVL trees
+CROW_ROUTE(app, "/api/debug/all-avl-trees").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    // Optional: Add authentication check
+    string token = req.get_header_value("Authorization");
+    string* currentUser = auth->getUsernameFromToken(token);
+    
+    if (!currentUser) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        auto allUsers = socialNetwork->getAllUsers();
+        crow::json::wvalue usersTreeInfo;
+        
+        for (size_t i = 0; i < allUsers.size(); ++i) {
+            try {
+                auto treeInfo = socialNetwork->getUserAVLTreeInfo(allUsers[i]);
+                crow::json::wvalue userTree;
+                userTree["username"] = allUsers[i];
+                userTree["friendCount"] = treeInfo.nodeCount;
+                userTree["treeHeight"] = treeInfo.height;
+                userTree["isBalanced"] = treeInfo.isBalanced;
+                usersTreeInfo[i] = std::move(userTree);
+            } catch (const std::exception& e) {
+                crow::json::wvalue userTree;
+                userTree["username"] = allUsers[i];
+                userTree["error"] = e.what();
+                usersTreeInfo[i] = std::move(userTree);
+            }
+        }
+        
+        result["success"] = true;
+        result["users"] = std::move(usersTreeInfo);
+        result["totalUsers"] = allUsers.size();
+        res.code = 200;
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error getting AVL trees info: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
 
     // Login endpoint
     CROW_ROUTE(app, "/api/login").methods("POST"_method, "OPTIONS"_method)

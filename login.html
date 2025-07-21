@@ -146,10 +146,10 @@
             font-size: 1.2rem;
         }
 
-        .menu-item:nth-child(1)::before { content: '🏠'; }
-        .menu-item:nth-child(2)::before { content: '👥'; }
-        .menu-item:nth-child(3)::before { content: '🔔'; }
-        .menu-item:nth-child(4)::before { content: '⚙️'; }
+        .menu-item:nth-child(2)::before { content: '🏠'; }
+        .menu-item:nth-child(3)::before { content: '👥'; }
+        .menu-item:nth-child(4)::before { content: '🔔'; }
+        .menu-item:nth-child(5)::before { content: '⚙️'; }
 
         /* Content Area */
         .content {
@@ -244,7 +244,7 @@
             font-size: 2rem;
             margin-bottom: 0.5rem;
         }
-
+        
         .auth-header p {
             color: #888;
         }
@@ -394,6 +394,87 @@
             border: 1px solid #1DB954;
         }
 
+        /* Friend card styles */
+        .friend-card {
+            background: #2c2c2c;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.2s;
+        }
+
+        .friend-card:hover {
+            transform: translateY(-2px);
+            background: #333;
+        }
+
+        .friend-card img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .friend-card-info {
+            flex: 1;
+        }
+
+        .friend-card-info strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .friend-card-info small {
+            color: #888;
+            font-size: 0.85rem;
+        }
+
+        .btn-accept, .btn-decline {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-accept {
+            background: #1DB954;
+            color: white;
+            margin-right: 0.5rem;
+        }
+
+        .btn-decline {
+            background: #e0245e;
+            color: white;
+        }
+
+        /* Friends page specific styles */
+        .friends-container {
+            max-width: 800px;
+        }
+
+        .friends-container h2 {
+            margin-bottom: 1.5rem;
+            color: #fff;
+        }
+
+        .friends-container h3 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: #1DB954;
+            font-size: 1.2rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+        }
+
         /* Hide elements initially */
         .dashboard-content {
             display: none;
@@ -436,7 +517,7 @@
     <div id="dashboardContent" class="dashboard-content">
         <!-- Header -->
         <header class="header">
-            <div class="logo">SoundSpace</div>
+            <div class="logo">Sound<span>Space</span></div>
             <div class="search-container">
                 <input type="text" class="search-bar" placeholder="Search for users..." id="userSearchInput">
                 <button class="search-btn" onclick="searchUsers()">🔍</button>
@@ -454,8 +535,8 @@
             <aside class="sidebar">
                 <nav class="menu-section">
                     <div class="menu-title">Menu</div>
-                    <a href="#" class="menu-item active" onclick="showHome()">Home</a>
-                    <a href="#" class="menu-item" onclick="showFriends()">Friends</a>
+                    <a href="#" class="menu-item active" onclick="showHome(); return false;">Home</a>
+                    <a href="#" class="menu-item" onclick="showFriends(); return false;">Friends</a>
                     <a href="#" class="menu-item">Notifications</a>
                     <a href="#" class="menu-item">Settings</a>
                 </nav>
@@ -468,14 +549,28 @@
 
             <!-- Content Area -->
             <main class="content" id="mainContent">
-                <div class="post-creation">
+                <div class="post-creation" id="postCreation">
                     <img id="postUserAvatar" class="user-avatar" src="" alt="You">
                     <textarea class="post-input" placeholder="What's on your mind? Share a song or thought..." rows="1"></textarea>
                     <button class="post-btn">Post</button>
                 </div>
                 
                 <div id="contentArea">
-                    <!-- Dynamic content will be loaded here -->
+                    <div id="postsContainer">
+                        <!-- Posts will be loaded here -->
+                        <div style="text-align: center; padding: 2rem; color: #888;">
+                            <h3>What's on your mind?</h3>
+                            <p>Share your favorite music or thoughts with your friends!</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="searchResultsContainer" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h2>Search Results</h2>
+                        <button onclick="clearSearch()" class="friend-btn" style="background-color: #888;">Clear Search</button>
+                    </div>
+                    <div id="searchResults"></div>
                 </div>
             </main>
 
@@ -495,9 +590,13 @@
     </div>
 
     <script>
-        let authToken = localStorage.getItem('authToken');
-        let currentUser = localStorage.getItem('username');
+        let authToken = sessionStorage.getItem('authToken');
+        let currentUser = sessionStorage.getItem('username');
         let isLogin = true;
+        let allUsers = [];
+        let receivedRequests = []; // Friend requests received by current user
+        let sentRequests = []; // Friend requests sent by current user
+        let friends = []; // Current friends list
 
         // Check if user is already logged in
         if (authToken && currentUser) {
@@ -553,9 +652,9 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('username', data.username);
-                    localStorage.setItem('userAvatar', data.avatar);
+                    sessionStorage.setItem('authToken', data.token);
+                    sessionStorage.setItem('username', data.username);
+                    sessionStorage.setItem('userAvatar', data.avatar || `https://via.placeholder.com/150/1DB954/FFFFFF?text=${data.username.charAt(0)}`);
                     showMessage('Success! Redirecting...', 'success');
                     setTimeout(() => showDashboard(), 1000);
                 } else {
@@ -576,35 +675,105 @@
             document.getElementById('dashboardContent').style.display = 'block';
             
             // Set user info
-            document.getElementById('currentUsername').textContent = localStorage.getItem('username');
-            const avatarUrl = localStorage.getItem('userAvatar');
+            const username = sessionStorage.getItem('username');
+            document.getElementById('currentUsername').textContent = username;
+            const avatarUrl = sessionStorage.getItem('userAvatar') || `https://via.placeholder.com/150/1DB954/FFFFFF?text=${username.charAt(0)}`;
             document.getElementById('userAvatar').src = avatarUrl;
             document.getElementById('postUserAvatar').src = avatarUrl;
             
             // Load initial data
-            loadFriends();
+            loadAllData();
+        }
+
+        async function loadAllData() {
+            await loadUserData();
+            loadFriendsSidebar();
             loadFriendSuggestions();
-            loadAllUsers();
+        }
+
+        async function loadUserData() {
+            try {
+                // Load all users
+                const usersResponse = await fetch('http://localhost:18080/api/users', {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+                
+                const usersData = await usersResponse.json();
+                if (usersData.success) {
+                    allUsers = usersData.users || [];
+                }
+                
+                // Load received friend requests (requests TO current user)
+                const receivedResponse = await fetch('http://localhost:18080/api/friend-requests/pending', {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+                
+                const receivedData = await receivedResponse.json();
+                if (receivedData.success) {
+                    receivedRequests = receivedData.requests || [];
+                }
+                
+                // Load sent friend requests (requests FROM current user)
+                const sentResponse = await fetch('http://localhost:18080/api/friend-requests/sent', {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+                
+                const sentData = await sentResponse.json();
+                if (sentData.success) {
+                    sentRequests = sentData.requests || [];
+                }
+                
+                // Load friends
+                const friendsResponse = await fetch('http://localhost:18080/api/friends', {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+                
+                const friendsData = await friendsResponse.json();
+                if (friendsData.success) {
+                    friends = friendsData.friends || [];
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('userSearchInput').value = '';
+            document.getElementById('searchResultsContainer').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'block';
         }
 
         async function searchUsers() {
             const searchInput = document.getElementById('userSearchInput').value.trim();
             
             if (!searchInput) {
-                loadAllUsers();
+                clearSearch();
                 return;
             }
             
             try {
                 const response = await fetch(`http://localhost:18080/api/users/search/${searchInput}`, {
                     headers: {
-                        'Authorization': localStorage.getItem('authToken')
+                        'Authorization': sessionStorage.getItem('authToken')
                     }
                 });
                 
                 const data = await response.json();
                 
                 if (data.success) {
+                    // Show search results container
+                    document.getElementById('searchResultsContainer').style.display = 'block';
+                    document.getElementById('contentArea').style.display = 'none';
+                    
+                    // Display results
                     displayUsers(data.users);
                 }
             } catch (error) {
@@ -612,280 +781,167 @@
             }
         }
 
-    async function loadAllUsers() {
-    try {
-        // Get all users
-        const response = await fetch('http://localhost:18080/api/users', {
-            headers: {
-                'Authorization': localStorage.getItem('authToken')
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            let pendingRequests = [];
-            let sentRequests = [];
+        function displayUsers(users) {
+            const container = document.getElementById('searchResults');
+            if (!container) return;
             
-            // Get pending friend requests (received)
-            try {
-                const pendingResponse = await fetch('http://localhost:18080/api/friend-requests/pending', {
-                    headers: { 'Authorization': localStorage.getItem('authToken') }
-                });
+            container.innerHTML = '';
+            
+            if (!users || users.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center;">No users found.</p>';
+                return;
+            }
+            
+            const usersList = document.createElement('div');
+            usersList.className = 'users-list';
+            
+            users.forEach(user => {
+                // Check relationship status
+                const hasReceivedRequest = receivedRequests.some(req => req.username === user.username);
+                const hasSentRequest = sentRequests.includes(user.username);
+                const isFriend = friends.includes(user.username);
                 
-                const pendingData = await pendingResponse.json();
-                if (pendingData.success && pendingData.requests) {
-                    pendingRequests = pendingData.requests;
-                }
-            } catch (error) {
-                console.error('Error fetching pending requests:', error);
-            }
-            
-            // Get sent friend requests
-            try {
-                const sentResponse = await fetch('http://localhost:18080/api/friend-requests/sent', {
-                    headers: { 'Authorization': localStorage.getItem('authToken') }
-                });
+                let status = 'Active user';
+                let actions = [];
                 
-                const sentData = await sentResponse.json();
-                if (sentData.success && sentData.requests) {
-                    sentRequests = sentData.requests;
+                if (isFriend) {
+                    status = 'Friend';
+                    actions = [{
+                        text: 'Remove Friend',
+                        onClick: () => removeFriend(user.username),
+                        className: 'friend-btn friend'
+                    }];
+                } else if (hasReceivedRequest) {
+                    status = 'Sent you a friend request';
+                    actions = [
+                        {
+                            text: 'Accept',
+                            onClick: () => acceptFriendRequest(user.username),
+                            className: 'friend-btn'
+                        },
+                        {
+                            text: 'Decline',
+                            onClick: () => rejectFriendRequest(user.username),
+                            className: 'friend-btn pending'
+                        }
+                    ];
+                } else if (hasSentRequest) {
+                    status = 'Friend request sent';
+                    actions = [{
+                        text: 'Cancel Request',
+                        onClick: () => cancelFriendRequest(user.username),
+                        className: 'friend-btn pending'
+                    }];
+                } else {
+                    actions = [{
+                        text: 'Add Friend',
+                        onClick: () => sendFriendRequest(user.username),
+                        className: 'friend-btn'
+                    }];
                 }
-            } catch (error) {
-                console.error('Error fetching sent requests:', error);
-            }
+                
+                const card = createUserCard(user, status, actions, hasReceivedRequest);
+                usersList.appendChild(card);
+            });
             
-            // Display users with correct status
-            displayUsers(data.users, pendingRequests, sentRequests);
+            container.appendChild(usersList);
         }
-    } catch (error) {
-        console.error('Load users error:', error);
-        alert('Failed to load users. Please check console for details.');
-    }
-}
 
-    function displayUsers(users, pendingRequests = [], sentRequests = []) {
-    const contentArea = document.getElementById('contentArea');
-    contentArea.innerHTML = ''; // Clear previous content
-    
-    if (!users || users.length === 0) {
-        contentArea.innerHTML = '<p style="color: #888; text-align: center;">No users found.</p>';
-        return;
-    }
-    
-    // Create container
-    const container = document.createElement('div');
-    container.className = 'users-list';
-    
-    // Extract usernames from pending requests if they're objects
-    const pendingUsernames = pendingRequests.map(req => 
-        typeof req === 'object' ? req.username : req
-    );
-    
-    // 1. Show pending requests section
-    if (pendingRequests.length > 0) {
-        const pendingHeader = document.createElement('h3');
-        pendingHeader.style.color = '#1DB954';
-        pendingHeader.style.marginBottom = '1rem';
-        pendingHeader.textContent = 'Pending Friend Requests';
-        container.appendChild(pendingHeader);
-        
-        pendingRequests.forEach(request => {
-            const username = typeof request === 'object' ? request.username : request;
-            const avatar = typeof request === 'object' ? request.avatar : 
-                `https://via.placeholder.com/150/1DB954/FFFFFF?text=${username.charAt(0)}`;
+        function createUserCard(user, status, actions, highlight = false) {
+            const card = document.createElement('div');
+            card.className = 'user-card';
+            if (highlight) card.style.border = '1px solid #1DB954';
             
-            const card = createUserCard(
-                username,
-                avatar,
-                'Sent you a friend request',
-                true
-            );
-            container.appendChild(card);
-        });
-        
-        const divider = document.createElement('hr');
-        divider.style.margin = '2rem 0';
-        divider.style.borderColor = '#333';
-        container.appendChild(divider);
-    }
-    
-    // 2. Show all users header
-    const usersHeader = document.createElement('h3');
-    usersHeader.style.marginBottom = '1rem';
-    usersHeader.textContent = 'All Users';
-    container.appendChild(usersHeader);
-    
-    // 3. Show all users
-    users.forEach(user => {
-        // Skip users that are already shown in pending requests
-        if (pendingUsernames.includes(user.username)) {
-            return;
-        }
-        
-        const isSentRequest = sentRequests.includes(user.username);
-        
-        let status = 'Active user';
-        let action = 'Add Friend';
-        let onClick = `sendFriendRequest('${user.username}')`;
-        let btnClass = 'friend-btn';
-        
-        if (user.status === 'friend') {
-            status = 'Friend';
-            action = 'Friends';
-            onClick = `removeFriend('${user.username}')`;
-            btnClass += ' friend';
-        } else if (isSentRequest) {
-            status = 'Request sent';
-            action = 'Cancel Request';
-            onClick = `cancelFriendRequest('${user.username}')`;
-            btnClass += ' pending';
-        }
-        
-        const card = createUserCard(
-            user.username,
-            user.avatar,
-            status,
-            false,
-            action,
-            onClick,
-            btnClass
-        );
-        
-        container.appendChild(card);
-    });
-    
-    contentArea.appendChild(container);
-}
-
-    function createUserCard(username, avatar, status, isPending, action = '', onClick = '', btnClass = '') {
-        const card = document.createElement('div');
-        card.className = 'user-card';
-        if (isPending) card.style.border = '1px solid #1DB954';
-        
-        // Avatar
-        const avatarImg = document.createElement('img');
-        avatarImg.src = avatar;
-        avatarImg.alt = username;
-        avatarImg.className = 'user-avatar-small';
-        
-        // User info
-        const userInfo = document.createElement('div');
-        userInfo.className = 'user-info';
-        
-        const name = document.createElement('div');
-        name.className = 'user-name';
-        name.textContent = username;
-        
-        const statusEl = document.createElement('div');
-        statusEl.className = 'user-status';
-        statusEl.textContent = status;
-        if (isPending) statusEl.style.color = '#1DB954';
-        
-        userInfo.appendChild(name);
-        userInfo.appendChild(statusEl);
-        
-        // Action buttons
-        const actionContainer = document.createElement('div');
-        
-        if (isPending) {
-            // Pending request card with Accept/Reject buttons
+            const avatar = document.createElement('img');
+            avatar.src = user.avatar || `https://via.placeholder.com/150/1DB954/FFFFFF?text=${user.username.charAt(0)}`;
+            avatar.alt = user.username;
+            avatar.className = 'user-avatar-small';
+            
+            const userInfo = document.createElement('div');
+            userInfo.className = 'user-info';
+            
+            const name = document.createElement('div');
+            name.className = 'user-name';
+            name.textContent = user.username;
+            
+            const statusEl = document.createElement('div');
+            statusEl.className = 'user-status';
+            statusEl.textContent = status;
+            if (highlight) statusEl.style.color = '#1DB954';
+            
+            userInfo.appendChild(name);
+            userInfo.appendChild(statusEl);
+            
+            const actionContainer = document.createElement('div');
             actionContainer.style.display = 'flex';
             actionContainer.style.gap = '0.5rem';
             
-            const acceptBtn = document.createElement('button');
-            acceptBtn.className = 'friend-btn';
-            acceptBtn.textContent = 'Accept';
-            acceptBtn.onclick = () => acceptFriendRequest(username);
+            actions.forEach(action => {
+                const btn = document.createElement('button');
+                btn.className = action.className;
+                btn.textContent = action.text;
+                btn.onclick = action.onClick;
+                actionContainer.appendChild(btn);
+            });
             
-            const rejectBtn = document.createElement('button');
-            rejectBtn.className = 'friend-btn pending';
-            rejectBtn.textContent = 'Reject';
-            rejectBtn.onclick = () => rejectFriendRequest(username);
+            card.appendChild(avatar);
+            card.appendChild(userInfo);
+            card.appendChild(actionContainer);
             
-            actionContainer.appendChild(acceptBtn);
-            actionContainer.appendChild(rejectBtn);
-        } else if (action) {
-            // Regular user card with action button
-            const actionBtn = document.createElement('button');
-            actionBtn.className = btnClass;
-            actionBtn.textContent = action;
-            if (onClick) actionBtn.onclick = new Function(onClick);
-            actionContainer.appendChild(actionBtn);
+            return card;
         }
-        
-        // Assemble card
-        card.appendChild(avatarImg);
-        card.appendChild(userInfo);
-        card.appendChild(actionContainer);
-        
-        return card;
-    }
-    // Add this debug function to login.html
-async function debugCheckFriendsSorting() {
-    try {
-        const response = await fetch('http://localhost:18080/api/friends', {
-            headers: {
-                'Authorization': localStorage.getItem('authToken')
-            }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            console.log('=== Friends List Debug ===');
-            console.log('Current user:', localStorage.getItem('username'));
-            console.log('Number of friends:', data.friends.length);
-            console.log('Friends in order returned by API:', data.friends);
-            
-            // Check if sorted alphabetically
-            const sortedFriends = [...data.friends].sort((a, b) => a.localeCompare(b));
-            const isSorted = JSON.stringify(data.friends) === JSON.stringify(sortedFriends);
-            
-            console.log('Expected alphabetical order:', sortedFriends);
-            console.log('Is correctly sorted:', isSorted);
-            
-            if (!isSorted) {
-                console.log('WARNING: Friends are NOT in alphabetical order!');
-                for (let i = 0; i < data.friends.length; i++) {
-                    if (data.friends[i] !== sortedFriends[i]) {
-                        console.log(`Mismatch at index ${i}: got "${data.friends[i]}", expected "${sortedFriends[i]}"`);
-                    }
-                }
-            }
-            console.log('========================');
-        }
-    } catch (error) {
-        console.error('Debug error:', error);
-    }
-}
 
-// Call this function in the console or add a button to trigger it
+        async function sendFriendRequest(receiver) {
+            try {
+                const response = await fetch('http://localhost:18080/api/friend-request/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ receiver })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend request sent!');
+                    await loadUserData();
+                    searchUsers(); // Refresh search results
+                } else {
+                    alert(data.message || 'Failed to send friend request');
+                }
+            } catch (error) {
+                console.error('Friend request error:', error);
+                alert('Network error. Please try again.');
+            }
+        }
 
         async function cancelFriendRequest(receiver) {
-    try {
-        const response = await fetch('http://localhost:18080/api/friend-request/cancel', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': localStorage.getItem('authToken')
-            },
-            body: JSON.stringify({ receiver })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            alert('Friend request canceled!');
-            loadAllUsers(); // Refresh the list
-        } else {
-            alert(data.message || 'Failed to cancel friend request');
+            try {
+                const response = await fetch('http://localhost:18080/api/friend-request/cancel', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ receiver })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Friend request canceled!');
+                    await loadUserData();
+                    searchUsers(); // Refresh search results
+                } else {
+                    alert(data.message || 'Failed to cancel friend request');
+                }
+            } catch (error) {
+                console.error('Cancel request error:', error);
+                alert('Network error. Please try again.');
+            }
         }
-    } catch (error) {
-        console.error('Cancel request error:', error);
-        alert('Network error. Please try again.');
-    }
-}
 
         async function acceptFriendRequest(sender) {
             try {
@@ -893,7 +949,7 @@ async function debugCheckFriendsSorting() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': localStorage.getItem('authToken')
+                        'Authorization': sessionStorage.getItem('authToken')
                     },
                     body: JSON.stringify({ sender })
                 });
@@ -902,8 +958,16 @@ async function debugCheckFriendsSorting() {
                 
                 if (data.success) {
                     alert('Friend request accepted!');
-                    loadAllUsers();
-                    loadFriends();
+                    await loadUserData();
+                    loadFriendsSidebar();
+                    
+                    // Refresh current view
+                    const activeMenu = document.querySelector('.menu-item.active');
+                    if (activeMenu && activeMenu.textContent.includes('Friends')) {
+                        showFriends();
+                    } else {
+                        searchUsers(); // Refresh search if in search view
+                    }
                 } else {
                     alert(data.message || 'Failed to accept friend request');
                 }
@@ -919,7 +983,7 @@ async function debugCheckFriendsSorting() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': localStorage.getItem('authToken')
+                        'Authorization': sessionStorage.getItem('authToken')
                     },
                     body: JSON.stringify({ sender })
                 });
@@ -928,37 +992,20 @@ async function debugCheckFriendsSorting() {
                 
                 if (data.success) {
                     alert('Friend request rejected');
-                    loadAllUsers();
+                    await loadUserData();
+                    
+                    // Refresh current view
+                    const activeMenu = document.querySelector('.menu-item.active');
+                    if (activeMenu && activeMenu.textContent.includes('Friends')) {
+                        showFriends();
+                    } else {
+                        searchUsers(); // Refresh search if in search view
+                    }
                 } else {
                     alert(data.message || 'Failed to reject friend request');
                 }
             } catch (error) {
                 console.error('Reject request error:', error);
-                alert('Network error. Please try again.');
-            }
-        }
-
-        async function sendFriendRequest(receiver) {
-            try {
-                const response = await fetch('http://localhost:18080/api/friend-request/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': localStorage.getItem('authToken')
-                    },
-                    body: JSON.stringify({ receiver })
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    alert('Friend request sent!');
-                    loadAllUsers(); // Refresh the list
-                } else {
-                    alert(data.message || 'Failed to send friend request');
-                }
-            } catch (error) {
-                console.error('Friend request error:', error);
                 alert('Network error. Please try again.');
             }
         }
@@ -971,7 +1018,7 @@ async function debugCheckFriendsSorting() {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': localStorage.getItem('authToken')
+                        'Authorization': sessionStorage.getItem('authToken')
                     },
                     body: JSON.stringify({ friend })
                 });
@@ -980,8 +1027,16 @@ async function debugCheckFriendsSorting() {
                 
                 if (data.success) {
                     alert('Friend removed');
-                    loadAllUsers();
-                    loadFriends();
+                    await loadUserData();
+                    loadFriendsSidebar();
+                    
+                    // Refresh current view
+                    const activeMenu = document.querySelector('.menu-item.active');
+                    if (activeMenu && activeMenu.textContent.includes('Friends')) {
+                        showFriends();
+                    } else {
+                        searchUsers(); // Refresh search if in search view
+                    }
                 } else {
                     alert(data.message || 'Failed to remove friend');
                 }
@@ -991,177 +1046,279 @@ async function debugCheckFriendsSorting() {
             }
         }
 
-        async function loadFriends() {
-            try {
-                const response = await fetch('http://localhost:18080/api/friends', {
-                    headers: {
-                        'Authorization': localStorage.getItem('authToken')
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    const friendsList = document.getElementById('friendsList');
-                    
-                    if (data.friends.length === 0) {
-                        friendsList.innerHTML = '<p style="color: #888; font-size: 0.9rem;">No friends yet</p>';
-                    } else {
-                        let html = '';
-                        data.friends.forEach(friend => {
-                            html += `
-                                <div class="user-card" style="padding: 0.75rem; margin-bottom: 0.5rem;">
-                                    <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friend.charAt(0)}" 
-                                         alt="${friend}" class="user-avatar-small" style="width: 40px; height: 40px;">
-                                    <div class="user-info">
-                                        <div class="user-name" style="font-size: 0.9rem;">${friend}</div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        friendsList.innerHTML = html;
-                    }
-                }
-            } catch (error) {
-                console.error('Load friends error:', error);
-            }
-        }
-
-        async function loadFriendSuggestions() {
-            try {
-                const response = await fetch('http://localhost:18080/api/friends/suggestions', {
-                    headers: {
-                        'Authorization': localStorage.getItem('authToken')
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    const suggestionsDiv = document.getElementById('friendSuggestions');
-                    
-                    if (data.suggestions.length === 0) {
-                        suggestionsDiv.innerHTML = '<p style="color: #888; font-size: 0.9rem;">No suggestions available</p>';
-                    } else {
-                        let html = '';
-                        data.suggestions.slice(0, 5).forEach(suggestion => {
-                            html += `
-                                <div class="menu-item" onclick="sendFriendRequest('${suggestion}')" style="cursor: pointer;">
-                                    <span>${suggestion}</span>
-                                </div>
-                            `;
-                        });
-                        suggestionsDiv.innerHTML = html;
-                    }
-                }
-            } catch (error) {
-                console.error('Load suggestions error:', error);
-            }
-        }
-
         function showHome() {
-            loadAllUsers();
+            clearSearch();
             // Update active menu
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelector('.menu-item[onclick="showHome(); return false;"]').classList.add('active');
+            
+            // Show post creation
+            document.getElementById('postCreation').style.display = 'flex';
+            
+            // Clear content area and show home content
+            const contentArea = document.getElementById('contentArea');
+            contentArea.style.display = 'block';
+            contentArea.innerHTML = `
+                <div id="postsContainer">
+                    <div style="text-align: center; padding: 2rem; color: #888;">
+                        <h3>What's on your mind?</h3>
+                        <p>Share your favorite music or thoughts with your friends!</p>
+                    </div>
+                </div>
+            `;
         }
 
         function showFriends() {
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = '<h2>Your Friends</h2>';
+            clearSearch();
             
             // Update active menu
             document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelector('.menu-item[onclick="showFriends(); return false;"]').classList.add('active');
             
-            // Load and display friends
+            // Hide post creation
+            document.getElementById('postCreation').style.display = 'none';
+            
+            // Show friends content
+            const contentArea = document.getElementById('contentArea');
+            contentArea.style.display = 'block';
+            contentArea.innerHTML = `
+                <div class="friends-container">
+                    <h2>Friends</h2>
+                    <h3>Pending Friend Requests</h3>
+                    <div id="pendingRequests" class="friends-wrapper">
+                        <p style="color:#888;">Loading...</p>
+                    </div>
+                    <h3>Your Friends</h3>
+                    <div id="friendsListMain" class="friends-wrapper">
+                        <p style="color:#888;">Loading...</p>
+                    </div>
+                </div>
+            `;
+            
             loadFriendsPage();
         }
 
         async function loadFriendsPage() {
-            try {
-                const response = await fetch('http://localhost:18080/api/friends', {
-                    headers: {
-                        'Authorization': localStorage.getItem('authToken')
-                    }
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    const contentArea = document.getElementById('contentArea');
-                    let html = '<h2>Your Friends</h2><div class="users-list">';
-                    
-                    if (data.friends.length === 0) {
-                        html += '<p style="color: #888; text-align: center;">You have no friends yet. Start by searching for users!</p>';
-                    } else {
-                        data.friends.forEach(friend => {
-                            html += `
-                                <div class="user-card">
-                                    <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friend.charAt(0)}" 
-                                         alt="${friend}" class="user-avatar-small">
-                                    <div class="user-info">
-                                        <div class="user-name">${friend}</div>
-                                        <div class="user-status">Friend</div>
-                                    </div>
-                                    <button class="friend-btn friend" onclick="removeFriend('${friend}')">Remove Friend</button>
-                                </div>
-                            `;
-                        });
-                    }
-                    
-                    html += '</div>';
-                    contentArea.innerHTML = html;
+            // Load pending requests
+            const pendingContainer = document.getElementById('pendingRequests');
+            if (pendingContainer) {
+                if (receivedRequests.length > 0) {
+                    pendingContainer.innerHTML = '';
+                    receivedRequests.forEach(request => {
+                        const card = document.createElement('div');
+                        card.className = 'friend-card';
+                        card.innerHTML = `
+                            <img src="${request.avatar || `https://via.placeholder.com/150/1DB954/FFFFFF?text=${request.username.charAt(0)}`}" 
+                                 alt="${request.username}">
+                            <div class="friend-card-info">
+                                <strong>${request.username}</strong>
+                                <small>Wants to be your friend</small>
+                            </div>
+                            <div>
+                                <button class="btn-accept" onclick="acceptFriendRequest('${request.username}')">Accept</button>
+                                <button class="btn-decline" onclick="rejectFriendRequest('${request.username}')">Decline</button>
+                            </div>
+                        `;
+                        pendingContainer.appendChild(card);
+                    });
+                } else {
+                    pendingContainer.innerHTML = '<div class="empty-state">No pending friend requests</div>';
                 }
-            } catch (error) {
-                console.error('Load friends page error:', error);
+            }
+            
+            // Load friends list
+            const friendsContainer = document.getElementById('friendsListMain');
+            if (friendsContainer) {
+                if (friends.length > 0) {
+                    friendsContainer.innerHTML = '';
+                    friends.forEach(friendUsername => {
+                        const card = document.createElement('div');
+                        card.className = 'friend-card';
+                        card.innerHTML = `
+                            <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friendUsername.charAt(0)}" 
+                                 alt="${friendUsername}">
+                            <div class="friend-card-info">
+                                <strong>${friendUsername}</strong>
+                                <small>Friend</small>
+                            </div>
+                            <button class="btn-decline" onclick="removeFriend('${friendUsername}')">Remove</button>
+                        `;
+                        friendsContainer.appendChild(card);
+                    });
+                } else {
+                    friendsContainer.innerHTML = '<div class="empty-state">You haven\'t added any friends yet</div>';
+                }
+            }
+        }
+
+        async function loadFriendsSidebar() {
+            const container = document.getElementById('friendsList');
+            if (!container) return;
+            
+            if (friends.length > 0) {
+                container.innerHTML = '';
+                friends.forEach(friendUsername => {
+                    const card = document.createElement('div');
+                    card.className = 'friend-card';
+                    card.innerHTML = `
+                        <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friendUsername.charAt(0)}" 
+                             alt="${friendUsername}">
+                        <div class="friend-card-info">
+                            <strong>${friendUsername}</strong>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = '<p style="color:#888;">You have no friends yet</p>';
+            }
+        }
+
+        async function loadFriendSuggestions() {
+            const container = document.getElementById('friendSuggestions');
+            if (!container) return;
+            
+            // Filter users who are not friends and haven't sent/received requests
+            const suggestions = allUsers.filter(user => {
+                return user.username !== currentUser &&
+                       !friends.includes(user.username) &&
+                       !sentRequests.includes(user.username) &&
+                       !receivedRequests.some(req => req.username === user.username);
+            }).slice(0, 3); // Show max 3 suggestions
+            
+            if (suggestions.length > 0) {
+                container.innerHTML = '';
+                suggestions.forEach(user => {
+                    const card = document.createElement('div');
+                    card.className = 'friend-card';
+                    card.style.marginLeft = '1rem';
+                    card.innerHTML = `
+                        <img src="${user.avatar || `https://via.placeholder.com/150/1DB954/FFFFFF?text=${user.username.charAt(0)}`}" 
+                             alt="${user.username}">
+                        <div class="friend-card-info">
+                            <strong>${user.username}</strong>
+                            <small style="cursor: pointer; color: #1DB954;" onclick="sendFriendRequest('${user.username}')">Add Friend</small>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = '<p style="color:#888; margin-left: 1rem;">No suggestions</p>';
             }
         }
 
         function logout() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('username');
-            localStorage.removeItem('userAvatar');
+            sessionStorage.clear();
             location.reload();
         }
 
-        // Add event listener for Enter key on search input
-        document.getElementById('userSearchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                searchUsers();
+        // Add search on Enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('userSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        searchUsers();
+                    }
+                });
             }
         });
+        // Add these functions to your frontend code to debug AVL trees
 
-        // Debug function to check all users
-        async function debugUsers() {
-            try {
-                const response = await fetch('http://localhost:18080/api/debug/users');
-                const data = await response.json();
-                console.log('All registered users:', data);
-            } catch (error) {
-                console.error('Debug error:', error);
+// Function to get AVL tree structure from backend
+async function getAVLTreeDebug(username) {
+    try {
+        const response = await fetch(`http://localhost:18080/api/debug/avl-tree/${username}`, {
+            headers: {
+                'Authorization': sessionStorage.getItem('authToken')
             }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            console.log(`AVL Tree for ${username}:`);
+            console.log('Tree Structure:', data.tree);
+            console.log('Height:', data.height);
+            console.log('Total Friends:', data.count);
+            console.log('Is Balanced:', data.isBalanced);
+            
+            // Visual representation
+            if (data.visual) {
+                console.log('\nVisual Representation:');
+                console.log(data.visual);
+            }
+            
+            return data;
+        } else {
+            console.error('Failed to get AVL tree:', data.message);
         }
-
-        // Debug function to check friend requests
-        async function debugFriendRequests() {
-            try {
-                const response = await fetch('http://localhost:18080/api/debug/friend-requests');
-                const data = await response.json();
-                console.log('All friend requests:', data);
-            } catch (error) {
-                console.error('Debug error:', error);
-            }
+    } catch (error) {
+        console.error('Error fetching AVL tree:', error);
+    }
+}
+function visualizeAVLTree(node, prefix = '', isLeft = true) {
+    if (!node) return '';
+    
+    let result = '';
+    
+    if (node.right) {
+        result += visualizeAVLTree(node.right, prefix + (isLeft ? '│   ' : '    '), false);
+    }
+    
+    result += prefix + (isLeft ? '└── ' : '┌── ') + node.value + ' (h:' + node.height + ')\n';
+    
+    if (node.left) {
+        result += visualizeAVLTree(node.left, prefix + (isLeft ? '    ' : '│   '), true);
+    }
+    
+    return result;
+}
+function checkAVLProperties(node) {
+    if (!node) return { isValid: true, height: -1 };
+    
+    const leftCheck = checkAVLProperties(node.left);
+    const rightCheck = checkAVLProperties(node.right);
+    
+    const leftHeight = node.left ? node.left.height : -1;
+    const rightHeight = node.right ? node.right.height : -1;
+    const balanceFactor = leftHeight - rightHeight;
+    
+    const isBalanced = Math.abs(balanceFactor) <= 1;
+    const heightCorrect = node.height === Math.max(leftHeight, rightHeight) + 1;
+    
+    return {
+        isValid: leftCheck.isValid && rightCheck.isValid && isBalanced && heightCorrect,
+        height: node.height,
+        balanceFactor: balanceFactor,
+        node: node.value
+    };
+}
+function addAVLDebugButton() {
+    const debugButton = document.createElement('button');
+    debugButton.textContent = 'Debug My AVL Tree';
+    debugButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #1DB954;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+    `;
+    
+    debugButton.onclick = () => {
+        const currentUser = sessionStorage.getItem('username');
+        if (currentUser) {
+            getAVLTreeDebug(currentUser);
         }
-
-        // Refresh data periodically
-        setInterval(() => {
-            if (authToken && currentUser) {
-                loadAllUsers();
-                loadFriends();
-                loadFriendSuggestions();
-            }
-        }, 5000); // Refresh every 5 seconds
+    };
+    
+    document.body.appendChild(debugButton);
+}
     </script>
 </body>
 </html>

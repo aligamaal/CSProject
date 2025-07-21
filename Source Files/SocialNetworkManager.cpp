@@ -2,17 +2,19 @@
 #include <algorithm>
 #include <set>
 #include <iostream>  // For debugging
+#include <string>
+#include "AVLTree.h"
+#include "User.h"
 
+// SocialNetworkManager.cpp
 void SocialNetworkManager::registerUser(string username, string password) {
     lock_guard<mutex> lock(mtx);
     if (users.find(username) != users.end()) {
-        throw runtime_error("Username already exists");
+        cout << "[DEBUG] User " << username << " already exists in social network\n";
+        return; // Gracefully handle existing user
     }
     users.emplace(username, User(username, password));
-    
-    // Debug: Print when user is registered
     cout << "[DEBUG] User registered: " << username << endl;
-    cout << "[DEBUG] Total users: " << users.size() << endl;
 }
 
 bool SocialNetworkManager::authenticateUser(string username, const string password) {
@@ -369,4 +371,61 @@ pair<unordered_map<string, vector<string>>, unordered_map<string, vector<string>
 SocialNetworkManager::getAllFriendRequests() {
     lock_guard<mutex> lock(mtx);
     return make_pair(sentRequests, receivedRequests);
+}
+SocialNetworkManager::AVLTreeInfo SocialNetworkManager::getUserAVLTreeInfo(const std::string& username) {
+    lock_guard<mutex> lock(mtx);
+    
+    auto it = users.find(username);
+    if (it == users.end()) {
+        throw std::runtime_error("User not found: " + username);
+    }
+    
+    AVLTreeInfo info;
+    User& user = it->second;
+    
+    // Get the AVL tree from the user's friends list
+    AVLTree<std::string>* friendsTree = user.getFriendsTree();
+    
+    if (!friendsTree) {
+        info.height = 0;
+        info.nodeCount = 0;
+        info.isBalanced = true;
+        info.visualRepresentation = "Empty tree";
+        info.treeStructure = crow::json::wvalue();
+        return info;
+    }
+    
+    // Convert tree to JSON structure
+    info.treeStructure = convertTreeToJSON(friendsTree->getRoot());
+    info.height = friendsTree->getHeight();
+    info.nodeCount = friendsTree->getSize();
+    info.isBalanced = friendsTree->isBalanced();
+    info.visualRepresentation = friendsTree->visualize();
+    
+    return info;
+}
+
+crow::json::wvalue SocialNetworkManager::convertTreeToJSON(AVLNode<string>* node) {
+    crow::json::wvalue result;
+    
+    if (!node) {
+        return result;
+    }
+    
+    result["value"] = node->key;
+    result["height"] = node->height;
+    
+    if (node->left) {
+        result["left"] = convertTreeToJSON(node->left);
+    } else {
+        result["left"] = nullptr;
+    }
+    
+    if (node->right) {
+        result["right"] = convertTreeToJSON(node->right);
+    } else {
+        result["right"] = nullptr;
+    }
+    
+    return result;
 }

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <queue>
 #include <vector>
+#include <string>
 using namespace std;
 
 
@@ -11,7 +12,7 @@ AVLTree<T>::AVLTree() : root(nullptr) {}
 
 
 template <typename T>
-void AVLTree<T>::destroyTree(Node* node) {
+void AVLTree<T>::destroyTree(AVLNode<T>* node) {
 	if (node) {
 		destroyTree(node->left);
 		destroyTree(node->right);
@@ -26,15 +27,15 @@ AVLTree<T>::~AVLTree() {
 
 
 template <typename T>
-int AVLTree<T>::height(Node* node) {
+int AVLTree<T>::height(AVLNode<T>* node) {
 	return node ? node->height : 0;
 }
 
 
 template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::rightRotate(Node* y) {
-	Node* x = y->left;
-	Node* T2 = x->right;
+AVLNode<T>* AVLTree<T>::rightRotate(AVLNode<T>* y) {
+	AVLNode<T>* x = y->left;
+	AVLNode<T>* T2 = x->right;
 
 	x->right = y;
 	y->left = T2;
@@ -45,10 +46,10 @@ typename AVLTree<T>::Node* AVLTree<T>::rightRotate(Node* y) {
 	return x;
 }
 
-template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::leftRotate(Node* x) {
-	Node* y = x->right;
-	Node* T2 = y->left;
+template <typename T> 
+AVLNode<T>* AVLTree<T>::leftRotate(AVLNode<T>* x) {
+	AVLNode<T>* y = x->right;
+	AVLNode<T>* T2 = y->left;
 
 	y->left = x;
 	x->right = T2;
@@ -60,26 +61,26 @@ typename AVLTree<T>::Node* AVLTree<T>::leftRotate(Node* x) {
 }
 
 template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::leftRightRotate(Node* z) {
+AVLNode<T>* AVLTree<T>::leftRightRotate(AVLNode<T>* z) {
 	z->left = leftRotate(z->left);
 	return rightRotate(z);
 }
 
 template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::rightLeftRotate(Node* z) {
+AVLNode<T>* AVLTree<T>::rightLeftRotate(AVLNode<T>* z) {
 	z->right = rightRotate(z->right);
 	return leftRotate(z);
 }
 
 
 template <typename T>
-int AVLTree<T>::balanceFactor(Node* node) {
+int AVLTree<T>::balanceFactor(AVLNode<T>* node) {
 	return node ? height(node->left) - height(node->right) : 0;
 }
 
 
 template <typename T>
-void AVLTree<T>::updateHeight(Node* node) {
+void AVLTree<T>::updateHeight(AVLNode<T>* node) {
 	if (node) {
 		node->height = 1 + max(height(node->left), height(node->right));
 	}
@@ -92,8 +93,8 @@ void AVLTree<T>::insert(T key) {
 }
 
 template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::insertRecursive(Node* node, T key) {
-	if (!node) return new Node(key);
+AVLNode<T>* AVLTree<T>::insertRecursive(AVLNode<T>* node, T key) {
+	if (!node) return new AVLNode<T>(key);
 
 	if (key < node->key)
 		node->left = insertRecursive(node->left, key);
@@ -131,7 +132,7 @@ void AVLTree<T>::deleteNode(T key) {
 }
 
 template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::deleteRecursive(Node* node, T key) {
+AVLNode<T>* AVLTree<T>::deleteRecursive(AVLNode<T>* node, T key) {
 	if (!node) return nullptr;
 
 	if (key < node->key) {
@@ -144,7 +145,7 @@ typename AVLTree<T>::Node* AVLTree<T>::deleteRecursive(Node* node, T key) {
 		// Node found - handle 3 cases
 		if (!node->left || !node->right) {
 			// Node has 0 or 1 child
-			Node* temp = node->left ? node->left : node->right;
+			AVLNode<T>* temp = node->left ? node->left : node->right;
 			if (!temp) {
 				// No children
 				delete node;
@@ -158,7 +159,7 @@ typename AVLTree<T>::Node* AVLTree<T>::deleteRecursive(Node* node, T key) {
 		}
 		else {
 			// Node has 2 children
-			Node* successor = minValueNode(node->right);
+			AVLNode<T>* successor = minValueNode(node->right);
 			node->key = successor->key;  // Copy successor's data
 			node->right = deleteRecursive(node->right, successor->key);
 		}
@@ -189,8 +190,8 @@ typename AVLTree<T>::Node* AVLTree<T>::deleteRecursive(Node* node, T key) {
 
 // Find minimum value node
 template <typename T>
-typename AVLTree<T>::Node* AVLTree<T>::minValueNode(Node* node) {
-	Node* current = node;
+AVLNode<T>* AVLTree<T>::minValueNode(AVLNode<T>* node) {
+	AVLNode<T>* current = node;
 	while (current && current->left)
 		current = current->left;
 	return current;
@@ -198,14 +199,14 @@ typename AVLTree<T>::Node* AVLTree<T>::minValueNode(Node* node) {
 
 // Traversals
 template <typename T>
-	vector<T> AVLTree<T>::inOrderTraversal() const {
+vector<T> AVLTree<T>::inOrderTraversal() const {
 	vector<T> result;
 	inOrderRecursive(root, result);
 	return result;
 }
 
 template <typename T>
-void AVLTree<T>::inOrderRecursive(Node* node, vector<T>& result) const {
+void AVLTree<T>::inOrderRecursive(AVLNode<T>* node, vector<T>& result) const {
 	if (!node) return;
 	inOrderRecursive(node->left, result);
 	result.push_back(node->key);
@@ -213,15 +214,15 @@ void AVLTree<T>::inOrderRecursive(Node* node, vector<T>& result) const {
 }
 
 template <typename T>
-	vector<T> AVLTree<T>::levelOrderTraversal() {
-		vector<T> result;
+vector<T> AVLTree<T>::levelOrderTraversal() {
+	vector<T> result;
 	if (!root) return result;
 
-	queue<Node*> q;
+	queue<AVLNode<T>*> q;
 	q.push(root);
 
 	while (!q.empty()) {
-		Node* current = q.front();
+		AVLNode<T>* current = q.front();
 		q.pop();
 		result.push_back(current->key);
 
@@ -234,7 +235,7 @@ template <typename T>
 // Search
 template <typename T>
 bool AVLTree<T>::search(T key) {
-	Node* current = root;
+	AVLNode<T>* current = root;
 	while (current) {
 		if (key == current->key) return true;
 		current = (key < current->key) ? current->left : current->right;
