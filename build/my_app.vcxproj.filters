@@ -22,6 +22,9 @@
     <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\SocialNetworkManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\Source Files\Post.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="C:\Users\andre\OneDrive - aucegypt.edu\CSProject\CMakeLists.txt" />

@@ -10,7 +10,8 @@ add_executable(my_app
     "Source Files/Utils.cpp" 
     "Source Files/User.cpp"
     "Source Files/AVLTree.cpp"
-    "Source Files/SocialNetworkManager.cpp"              # Add this if getMimeType is here
+    "Source Files/SocialNetworkManager.cpp"    
+    "Source Files/Post.cpp"          # Add this if getMimeType is here
     # Add any other .cpp files you have
 )
 

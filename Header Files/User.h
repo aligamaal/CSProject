@@ -1,46 +1,46 @@
-#pragma once
 #ifndef USER_H
 #define USER_H
-#define CROW_USE_ASIO
 
-#include "crow.h"
-#include <unordered_map>
-#include <mutex>
 #include <string>
-#include <random>
-#include <sstream>
-#include <memory>
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-#include <functional>
+#include <vector>
 #include "AVLTree.h"
-using namespace std;
+#include "Post.h"
+
 class User {
 private:
-    string userName;
-    string salt;
+    std::string userName;
+    std::string salt;
     size_t hashPassword;
-    AVLTree<std::string> friendsTree;
-
+    std::vector<Post> posts_;
+    
+    // Static methods for password handling
+    static std::string generateSalt();
+    static size_t hashPasswordWithSalt(const std::string& password, const std::string& salt);
+    
 public:
-    AVLTree<std::string> friends;
+    AVLTree<std::string> friends;  // Made public for direct access
+    
     User();
-    User(const string&, const string&);
+    User(const std::string& uname, const std::string& password);
+    
+    // Password methods
+    bool checkPassword(const std::string& password) const;
+    std::string getSalt();
     size_t getHashPassword();
-    bool checkPassword(const string&) const;
-    string generateSalt();
-    string getSalt();
-    static size_t hashPasswordWithSalt(const string&, const string&);
-    void addFriend(const string& friendName);
-    void removeFriend(const string& friendName);
-    bool isFriendWith(const string& friendName);
-    vector<string> getFriendsList() const;
-    AVLTree<std::string>* getFriendsTree() { 
-        return &friends; 
-    }
-    const AVLTree<std::string>* getFriendsTree() const { 
-        return &friends; 
-    }
+    
+    // Friend management
+    void addFriend(const std::string& friendName);
+    void removeFriend(const std::string& friendName);
+    bool isFriendWith(const std::string& friendName);
+    std::vector<std::string> getFriendsList() const;
+    AVLTree<std::string>* getFriendsTree() { return &friends; }
+    
+    // Post management
+    void addPost(const std::string& content);
+    const std::vector<Post>& getPosts() const;
+    std::vector<Post>& getPostsMutable();
+    void deletePost(size_t index);
+    void editPost(size_t index, const std::string& newContent);
 };
-#endif
+
+#endif // USER_H

@@ -170,8 +170,13 @@
             align-items: flex-start;
         }
 
-        .post-input {
+        .post-input-container {
             flex: 1;
+            position: relative;
+        }
+
+        .post-input {
+            width: 100%;
             background-color: #1a1a1a;
             border: 1px solid #333;
             border-radius: 25px;
@@ -180,6 +185,39 @@
             font-size: 1rem;
             resize: none;
             font-family: inherit;
+            min-height: 45px;
+            max-height: 120px;
+            transition: border-color 0.2s;
+        }
+
+        .post-input:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+
+        .post-input.warning {
+            border-color: #ff9500;
+        }
+
+        .post-input.error {
+            border-color: #ff4444;
+        }
+
+        .char-counter {
+            position: absolute;
+            bottom: -20px;
+            right: 10px;
+            font-size: 0.8rem;
+            color: #888;
+            transition: color 0.2s;
+        }
+
+        .char-counter.warning {
+            color: #ff9500;
+        }
+
+        .char-counter.error {
+            color: #ff4444;
         }
 
         .post-btn {
@@ -190,11 +228,258 @@
             padding: 0.75rem 2rem;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            white-space: nowrap;
+            height: fit-content;
         }
 
-        .post-btn:hover {
+        .post-btn:hover:not(:disabled) {
             background-color: #1ed760;
+        }
+
+        .post-btn:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .post-btn.loading {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        /* Timeline Styles */
+        .timeline-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-color: #333;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .post-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .post-author-info {
+            flex: 1;
+        }
+
+        .post-author {
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 0.25rem;
+        }
+
+        .post-timestamp {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .post-card:hover .post-actions {
+            opacity: 1;
+        }
+
+        .post-action-btn {
+            background: none;
+            border: 1px solid #666;
+            color: #888;
+            border-radius: 15px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .post-action-btn:hover {
+            border-color: #1DB954;
+            color: #1DB954;
+        }
+
+        .post-action-btn.delete:hover {
+            border-color: #ff4444;
+            color: #ff4444;
+        }
+
+        .post-content {
+            color: #fff;
+            line-height: 1.5;
+            font-size: 1rem;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .timeline-loading {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+        }
+
+        .timeline-empty {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: #888;
+        }
+
+        .timeline-empty h3 {
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        /* Edit Post Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #333;
+            color: #fff;
+        }
+
+        .modal-textarea {
+            width: 100%;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            color: #fff;
+            font-size: 1rem;
+            resize: vertical;
+            font-family: inherit;
+            min-height: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .modal-textarea:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.cancel {
+            background: #666;
+            color: #fff;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #777;
+        }
+
+        .modal-btn.save {
+            background: #1DB954;
+            color: #000;
+        }
+
+        .modal-btn.save:hover {
+            background: #1ed760;
+        }
+
+        .modal-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         /* Right Sidebar */
@@ -831,6 +1116,32 @@
             background: #777 !important;
             transform: scale(1.05);
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar, .right-sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .post-creation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .search-container {
+                flex: 1;
+                max-width: none;
+            }
+        }
     </style>
 </head>
 <body>
@@ -908,16 +1219,18 @@
             <main class="content" id="mainContent">
                 <div class="post-creation" id="postCreation">
                     <img id="postUserAvatar" class="user-avatar" src="/placeholder.svg" alt="You">
-                    <textarea class="post-input" placeholder="What's on your mind? Share a song or thought..." rows="1"></textarea>
-                    <button class="post-btn">Post</button>
+                    <div class="post-input-container">
+                        <textarea class="post-input" id="postInput" placeholder="What's on your mind? Share a song or thought..." rows="1"></textarea>
+                        <div class="char-counter" id="charCounter">0/500</div>
+                    </div>
+                    <button class="post-btn" id="postButton">Post</button>
                 </div>
                 
                 <div id="contentArea">
-                    <div id="postsContainer">
-                        <!-- Posts will be loaded here -->
-                        <div style="text-align: center; padding: 2rem; color: #888;">
-                            <h3>What's on your mind?</h3>
-                            <p>Share your favorite music or thoughts with your friends!</p>
+                    <div id="postsContainer" class="timeline-container">
+                        <div class="timeline-loading">
+                            <div class="loading-spinner"></div>
+                            Loading your timeline...
                         </div>
                     </div>
                 </div>
@@ -941,6 +1254,24 @@
         </div>
     </div>
 
+    <!-- Edit Post Modal -->
+    <div id="editPostModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Post</h3>
+                <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="post-input-container">
+                <textarea class="modal-textarea" id="editPostContent" placeholder="Edit your post..."></textarea>
+                <div class="char-counter" id="editCharCounter">0/500</div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeEditModal()">Cancel</button>
+                <button class="modal-btn save" id="saveEditButton" onclick="savePostEdit()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let authToken = sessionStorage.getItem('authToken');
         let currentUser = sessionStorage.getItem('username');
@@ -949,6 +1280,7 @@
         let receivedRequests = []; // Friend requests received by current user
         let sentRequests = []; // Friend requests sent by current user
         let friends = []; // Current friends list
+        let currentEditingPostIndex = null;
 
         // Check if user is already logged in
         if (authToken && currentUser) {
@@ -1033,8 +1365,14 @@
             document.getElementById('userAvatar').src = avatarUrl;
             document.getElementById('postUserAvatar').src = avatarUrl;
             
+            // Initialize post functionality
+            initializePostCreation();
+            
             // Load initial data
             loadAllData();
+            
+            // Load timeline
+            loadTimeline();
         }
 
         async function loadAllData() {
@@ -1097,22 +1435,320 @@
             }
         }
 
-        function clearSearch() {
-            document.getElementById('userSearchInput').value = '';
-            document.getElementById('searchResultsContainer').style.display = 'none';
-            document.getElementById('contentArea').style.display = 'block';
+        // Post Creation Functionality
+        function initializePostCreation() {
+            const postInput = document.getElementById('postInput');
+            const postButton = document.getElementById('postButton');
+            const charCounter = document.getElementById('charCounter');
+
+            // Auto-resize textarea
+            postInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+                
+                // Update character counter
+                const length = this.value.length;
+                charCounter.textContent = `${length}/500`;
+                
+                // Update styling based on character count
+                if (length > 500) {
+                    postInput.classList.add('error');
+                    postInput.classList.remove('warning');
+                    charCounter.classList.add('error');
+                    charCounter.classList.remove('warning');
+                    postButton.disabled = true;
+                } else if (length > 450) {
+                    postInput.classList.add('warning');
+                    postInput.classList.remove('error');
+                    charCounter.classList.add('warning');
+                    charCounter.classList.remove('error');
+                    postButton.disabled = false;
+                } else {
+                    postInput.classList.remove('warning', 'error');
+                    charCounter.classList.remove('warning', 'error');
+                    postButton.disabled = length === 0;
+                }
+            });
+
+            // Handle post submission
+            postButton.addEventListener('click', createPost);
+            
+            // Handle Enter key (Shift+Enter for new line)
+            postInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!postButton.disabled) {
+                        createPost();
+                    }
+                }
+            });
         }
 
-        async function searchUsers() {
-            const searchInput = document.getElementById('userSearchInput').value.trim();
+        async function createPost() {
+            const postInput = document.getElementById('postInput');
+            const postButton = document.getElementById('postButton');
+            const content = postInput.value.trim();
+
+            if (!content || content.length > 500) return;
+
+            // Show loading state
+            postButton.textContent = 'Posting...';
+            postButton.classList.add('loading');
+            postButton.disabled = true;
+
+            try {
+                const response = await fetch('http://localhost:18080/api/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ content })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Clear input
+                    postInput.value = '';
+                    postInput.style.height = 'auto';
+                    document.getElementById('charCounter').textContent = '0/500';
+                    
+                    // Reload timeline
+                    await loadTimeline();
+                    
+                    // Show success feedback
+                    showTemporaryMessage('Post created successfully!', 'success');
+                } else {
+                    showTemporaryMessage(data.message || 'Failed to create post', 'error');
+                }
+            } catch (error) {
+                console.error('Error creating post:', error);
+                showTemporaryMessage('Network error. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                postButton.textContent = 'Post';
+                postButton.classList.remove('loading');
+                postButton.disabled = false;
+            }
+        }
+
+        async function loadTimeline() {
+            const container = document.getElementById('postsContainer');
             
-            if (!searchInput) {
-                clearSearch();
+            // Show loading state
+            container.innerHTML = `
+                <div class="timeline-loading">
+                    <div class="loading-spinner"></div>
+                    Loading your timeline...
+                </div>
+            `;
+
+            try {
+                const response = await fetch('http://localhost:18080/api/timeline', {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayTimeline(data.posts);
+                } else {
+                    container.innerHTML = `
+                        <div class="timeline-empty">
+                            <h3>Unable to load timeline</h3>
+                            <p>${data.message || 'Please try again later.'}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading timeline:', error);
+                container.innerHTML = `
+                    <div class="timeline-empty">
+                        <h3>Network Error</h3>
+                        <p>Unable to load your timeline. Please check your connection.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayTimeline(posts) {
+            const container = document.getElementById('postsContainer');
+            
+            if (!posts || posts.length === 0) {
+                container.innerHTML = `
+                    <div class="timeline-empty">
+                        <h3>Your timeline is empty</h3>
+                        <p>Start by creating your first post or add some friends to see their posts!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+
+            posts.forEach((post, index) => {
+                const postCard = createPostCard(post, index);
+                container.appendChild(postCard);
+            });
+        }
+
+        function createPostCard(post, index) {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            
+            const isOwnPost = post.author === sessionStorage.getItem('username');
+            
+            card.innerHTML = `
+                <div class="post-header">
+                    <img src="${post.authorAvatar}" alt="${post.author}" class="post-avatar">
+                    <div class="post-author-info">
+                        <div class="post-author">${post.author}</div>
+                        <div class="post-timestamp">${formatTimestamp(post.timestamp)}</div>
+                    </div>
+                    ${isOwnPost ? `
+                        <div class="post-actions">
+                            <button class="post-action-btn" onclick="editPost(${index})">Edit</button>
+                            <button class="post-action-btn delete" onclick="deletePost(${index})">Delete</button>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="post-content">${escapeHtml(post.content)}</div>
+            `;
+
+            return card;
+        }
+
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp * 1000);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMins / 60);
+            const diffDays = Math.floor(diffHours / 24);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showTemporaryMessage(message, type) {
+            const messageEl = document.createElement('div');
+            messageEl.className = `message ${type}`;
+            messageEl.textContent = message;
+            messageEl.style.position = 'fixed';
+            messageEl.style.top = '20px';
+            messageEl.style.right = '20px';
+            messageEl.style.zIndex = '1000';
+            messageEl.style.minWidth = '300px';
+            
+            document.body.appendChild(messageEl);
+            
+            setTimeout(() => {
+                messageEl.remove();
+            }, 3000);
+        }
+
+        // Edit Post Functionality
+        function editPost(postIndex) {
+            currentEditingPostIndex = postIndex;
+            
+            // Get current post content
+            const postCards = document.querySelectorAll('.post-card');
+            const postCard = postCards[postIndex];
+            const contentEl = postCard.querySelector('.post-content');
+            const currentContent = contentEl.textContent;
+            
+            // Populate modal
+            const editContent = document.getElementById('editPostContent');
+            const editCharCounter = document.getElementById('editCharCounter');
+            
+            editContent.value = currentContent;
+            editCharCounter.textContent = `${currentContent.length}/500`;
+            
+            // Show modal
+            document.getElementById('editPostModal').classList.add('show');
+            editContent.focus();
+            
+            // Setup character counter for edit modal
+            editContent.oninput = function() {
+                const length = this.value.length;
+                editCharCounter.textContent = `${length}/500`;
+                
+                const saveButton = document.getElementById('saveEditButton');
+                if (length > 500) {
+                    editCharCounter.classList.add('error');
+                    saveButton.disabled = true;
+                } else {
+                    editCharCounter.classList.remove('error');
+                    saveButton.disabled = length === 0;
+                }
+            };
+        }
+
+        function closeEditModal() {
+            document.getElementById('editPostModal').classList.remove('show');
+            currentEditingPostIndex = null;
+        }
+
+        async function savePostEdit() {
+            const editContent = document.getElementById('editPostContent');
+            const newContent = editContent.value.trim();
+            
+            if (!newContent || newContent.length > 500 || currentEditingPostIndex === null) return;
+            
+            const saveButton = document.getElementById('saveEditButton');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Saving...';
+            
+            try {
+                const response = await fetch(`http://localhost:18080/api/posts/${currentEditingPostIndex}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': sessionStorage.getItem('authToken')
+                    },
+                    body: JSON.stringify({ content: newContent })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    closeEditModal();
+                    await loadTimeline(); // Reload timeline
+                    showTemporaryMessage('Post updated successfully!', 'success');
+                } else {
+                    showTemporaryMessage(data.message || 'Failed to update post', 'error');
+                }
+            } catch (error) {
+                console.error('Error updating post:', error);
+                showTemporaryMessage('Network error. Please try again.', 'error');
+            } finally {
+                saveButton.disabled = false;
+                saveButton.textContent = 'Save Changes';
+            }
+        }
+
+        // Delete Post Functionality
+        async function deletePost(postIndex) {
+            if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
                 return;
             }
             
             try {
-                const response = await fetch(`http://localhost:18080/api/users/search/${searchInput}`, {
+                const response = await fetch(`http://localhost:18080/api/posts/${postIndex}`, {
+                    method: 'DELETE',
                     headers: {
                         'Authorization': sessionStorage.getItem('authToken')
                     }
@@ -1121,83 +1757,173 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    // Show search results container
-                    document.getElementById('searchResultsContainer').style.display = 'block';
-                    document.getElementById('contentArea').style.display = 'none';
-                    
-                    // Display results
-                    displayUsers(data.users);
+                    await loadTimeline(); // Reload timeline
+                    showTemporaryMessage('Post deleted successfully!', 'success');
+                } else {
+                    showTemporaryMessage(data.message || 'Failed to delete post', 'error');
                 }
             } catch (error) {
-                console.error('Search error:', error);
+                console.error('Error deleting post:', error);
+                showTemporaryMessage('Network error. Please try again.', 'error');
             }
         }
 
-        function displayUsers(users) {
-            const container = document.getElementById('searchResults');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (!users || users.length === 0) {
-                container.innerHTML = '<p style="color: #888; text-align: center;">No users found.</p>';
-                return;
+        function clearSearch() {
+            document.getElementById('userSearchInput').value = '';
+            document.getElementById('searchResultsContainer').style.display = 'none';
+            document.getElementById('contentArea').style.display = 'block';
+        }
+
+        // FIXED SEARCH FUNCTION - Now uses the correct BST-based endpoint
+        async function searchUsers() {
+    const searchInput = document.getElementById('userSearchInput').value.trim();
+    
+    if (!searchInput) {
+        clearSearch();
+        return;
+    }
+    
+    try {
+        // Use the BST-based search endpoint
+        const response = await fetch(`http://localhost:18080/api/users/search/${encodeURIComponent(searchInput)}`, {
+            headers: {
+                'Authorization': sessionStorage.getItem('authToken')
             }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Show search results container
+            document.getElementById('searchResultsContainer').style.display = 'block';
+            document.getElementById('contentArea').style.display = 'none';
             
-            const usersList = document.createElement('div');
-            usersList.className = 'users-list';
+            // The response already includes properly formatted user objects
+            const users = data.users || [];
             
-            users.forEach(user => {
+            // Update the results with relationship status
+            const enrichedUsers = users.map(user => {
                 // Check relationship status
                 const hasReceivedRequest = receivedRequests.some(req => req.username === user.username);
                 const hasSentRequest = sentRequests.includes(user.username);
                 const isFriend = friends.includes(user.username);
                 
-                let status = 'Active user';
-                let actions = [];
-                
+                // Update status based on local state
                 if (isFriend) {
-                    status = 'Friend';
-                    actions = [{
-                        text: 'Remove Friend',
-                        onClick: () => removeFriend(user.username),
-                        className: 'friend-btn friend'
-                    }];
+                    user.status = 'friend';
                 } else if (hasReceivedRequest) {
-                    status = 'Sent you a friend request';
-                    actions = [
-                        {
-                            text: 'Accept',
-                            onClick: () => acceptFriendRequest(user.username),
-                            className: 'friend-btn'
-                        },
-                        {
-                            text: 'Decline',
-                            onClick: () => rejectFriendRequest(user.username),
-                            className: 'friend-btn pending'
-                        }
-                    ];
+                    user.status = 'received_request';
                 } else if (hasSentRequest) {
-                    status = 'Friend request sent';
-                    actions = [{
-                        text: 'Cancel Request',
-                        onClick: () => cancelFriendRequest(user.username),
-                        className: 'friend-btn pending'
-                    }];
-                } else {
-                    actions = [{
-                        text: 'Add Friend',
-                        onClick: () => sendFriendRequest(user.username),
-                        className: 'friend-btn'
-                    }];
+                    user.status = 'sent_request';
                 }
                 
-                const card = createUserCard(user, status, actions, hasReceivedRequest);
-                usersList.appendChild(card);
+                return user;
             });
             
-            container.appendChild(usersList);
+            // Display results
+            displayUsers(enrichedUsers);
+            
+            console.log(`BST Search found ${users.length} users for "${searchInput}"`);
+        } else {
+            console.error('Search failed:', data.message);
+            // Show error message
+            document.getElementById('searchResultsContainer').style.display = 'block';
+            document.getElementById('contentArea').style.display = 'none';
+            
+            const container = document.getElementById('searchResults');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 2rem;">
+                    <p style="color: #ff4444; margin-bottom: 1rem;">Search failed: ${data.message || 'Unknown error'}</p>
+                    <button onclick="clearSearch()" class="friend-btn">Go Back</button>
+                </div>
+            `;
         }
+    } catch (error) {
+        console.error('Search error:', error);
+        showTemporaryMessage('Search failed. Please try again.', 'error');
+        
+        // Show error in results area
+        document.getElementById('searchResultsContainer').style.display = 'block';
+        document.getElementById('contentArea').style.display = 'none';
+        
+        const container = document.getElementById('searchResults');
+        container.innerHTML = `
+            <div style="text-align: center; padding: 2rem;">
+                <p style="color: #ff4444; margin-bottom: 1rem;">Network error. Please check your connection.</p>
+                <button onclick="clearSearch()" class="friend-btn">Go Back</button>
+            </div>
+        `;
+    }
+}
+
+       function displayUsers(users) {
+    const container = document.getElementById('searchResults');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (!users || users.length === 0) {
+        container.innerHTML = '<p style="color: #888; text-align: center; padding: 2rem;">No users found matching your search.</p>';
+        return;
+    }
+    
+    const usersList = document.createElement('div');
+    usersList.className = 'users-list';
+    
+    users.forEach(user => {
+        // Check relationship status using the enriched data
+        const hasReceivedRequest = user.status === 'received_request' || 
+                                 receivedRequests.some(req => req.username === user.username);
+        const hasSentRequest = user.status === 'sent_request' || 
+                             sentRequests.includes(user.username);
+        const isFriend = user.status === 'friend' || 
+                        friends.includes(user.username);
+        
+        let status = 'Active user';
+        let actions = [];
+        
+        if (isFriend) {
+            status = 'Friend';
+            actions = [{
+                text: 'Remove Friend',
+                onClick: () => removeFriend(user.username),
+                className: 'friend-btn friend'
+            }];
+        } else if (hasReceivedRequest) {
+            status = 'Sent you a friend request';
+            actions = [
+                {
+                    text: 'Accept',
+                    onClick: () => acceptFriendRequest(user.username),
+                    className: 'friend-btn'
+                },
+                {
+                    text: 'Decline',
+                    onClick: () => rejectFriendRequest(user.username),
+                    className: 'friend-btn pending'
+                }
+            ];
+        } else if (hasSentRequest) {
+            status = 'Friend request sent';
+            actions = [{
+                text: 'Cancel Request',
+                onClick: () => cancelFriendRequest(user.username),
+                className: 'friend-btn pending'
+            }];
+        } else {
+            actions = [{
+                text: 'Add Friend',
+                onClick: () => sendFriendRequest(user.username),
+                className: 'friend-btn'
+            }];
+        }
+        
+        const card = createUserCard(user, status, actions, hasReceivedRequest);
+        usersList.appendChild(card);
+    });
+    
+    container.appendChild(usersList);
+}
 
         function createUserCard(user, status, actions, highlight = false) {
             const card = document.createElement('div');
@@ -1257,16 +1983,16 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Friend request sent!');
+                    showTemporaryMessage('Friend request sent!', 'success');
                     await loadUserData();
                     loadFriendSuggestions(); // Refresh suggestions
                     searchUsers(); // Refresh search results if in search view
                 } else {
-                    alert(data.message || 'Failed to send friend request');
+                    showTemporaryMessage(data.message || 'Failed to send friend request', 'error');
                 }
             } catch (error) {
                 console.error('Friend request error:', error);
-                alert('Network error. Please try again.');
+                showTemporaryMessage('Network error. Please try again.', 'error');
             }
         }
 
@@ -1284,15 +2010,15 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Friend request canceled!');
+                    showTemporaryMessage('Friend request canceled!', 'success');
                     await loadUserData();
                     searchUsers(); // Refresh search results
                 } else {
-                    alert(data.message || 'Failed to cancel friend request');
+                    showTemporaryMessage(data.message || 'Failed to cancel friend request', 'error');
                 }
             } catch (error) {
                 console.error('Cancel request error:', error);
-                alert('Network error. Please try again.');
+                showTemporaryMessage('Network error. Please try again.', 'error');
             }
         }
 
@@ -1310,10 +2036,11 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Friend request accepted!');
+                    showTemporaryMessage('Friend request accepted!', 'success');
                     await loadUserData();
                     loadFriendsSidebar();
                     loadFriendSuggestions(); // Refresh suggestions
+                    loadTimeline(); // Refresh timeline to show new friend's posts
                     
                     // Refresh current view
                     const activeMenu = document.querySelector('.menu-item.active');
@@ -1323,11 +2050,11 @@
                         searchUsers(); // Refresh search if in search view
                     }
                 } else {
-                    alert(data.message || 'Failed to accept friend request');
+                    showTemporaryMessage(data.message || 'Failed to accept friend request', 'error');
                 }
             } catch (error) {
                 console.error('Accept request error:', error);
-                alert('Network error. Please try again.');
+                showTemporaryMessage('Network error. Please try again.', 'error');
             }
         }
 
@@ -1345,7 +2072,7 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Friend request rejected');
+                    showTemporaryMessage('Friend request rejected', 'success');
                     await loadUserData();
                     
                     // Refresh current view
@@ -1356,11 +2083,11 @@
                         searchUsers(); // Refresh search if in search view
                     }
                 } else {
-                    alert(data.message || 'Failed to reject friend request');
+                    showTemporaryMessage(data.message || 'Failed to reject friend request', 'error');
                 }
             } catch (error) {
                 console.error('Reject request error:', error);
-                alert('Network error. Please try again.');
+                showTemporaryMessage('Network error. Please try again.', 'error');
             }
         }
 
@@ -1380,10 +2107,11 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    alert('Friend removed');
+                    showTemporaryMessage('Friend removed', 'success');
                     await loadUserData();
                     loadFriendsSidebar();
                     loadFriendSuggestions(); // Refresh suggestions
+                    loadTimeline(); // Refresh timeline
                     
                     // Refresh current view
                     const activeMenu = document.querySelector('.menu-item.active');
@@ -1393,11 +2121,11 @@
                         searchUsers(); // Refresh search if in search view
                     }
                 } else {
-                    alert(data.message || 'Failed to remove friend');
+                    showTemporaryMessage(data.message || 'Failed to remove friend', 'error');
                 }
             } catch (error) {
                 console.error('Remove friend error:', error);
-                alert('Network error. Please try again.');
+                showTemporaryMessage('Network error. Please try again.', 'error');
             }
         }
 
@@ -1410,17 +2138,12 @@
             // Show post creation
             document.getElementById('postCreation').style.display = 'flex';
             
-            // Clear content area and show home content
+            // Clear content area and show timeline
             const contentArea = document.getElementById('contentArea');
             contentArea.style.display = 'block';
-            contentArea.innerHTML = `
-                <div id="postsContainer">
-                    <div style="text-align: center; padding: 2rem; color: #888;">
-                        <h3>What's on your mind?</h3>
-                        <p>Share your favorite music or thoughts with your friends!</p>
-                    </div>
-                </div>
-            `;
+            
+            // Load timeline
+            loadTimeline();
         }
 
         function showFriends() {
@@ -1671,148 +2394,148 @@
 
         // Create enhanced suggestion card with mutual friends info
         function createSuggestionCard(suggestion, rank) {
-    const card = document.createElement('div');
-    card.className = 'suggestion-card';
-    card.style.position = 'relative';
-    
-    // Add ranking indicator
-    const rankBadge = document.createElement('div');
-    rankBadge.className = `suggestion-rank rank-${rank}`;
-    rankBadge.textContent = rank;
-    card.appendChild(rankBadge);
-    
-    // Main suggestion content
-    const mainContent = document.createElement('div');
-    mainContent.className = 'suggestion-main';
-    
-    mainContent.innerHTML = `
-        <img src="${suggestion.avatar}" alt="${suggestion.username}">
-        <div class="suggestion-info">
-            <strong>${suggestion.username}</strong>
-        </div>
-    `;
-    
-    // Mutual friends info section
-    const mutualInfo = document.createElement('div');
-    mutualInfo.className = 'suggestion-mutual-info';
-    
-    if (suggestion.mutualCount > 0) {
-        const mutualBadge = document.createElement('div');
-        mutualBadge.className = 'mutual-count-badge';
-        mutualBadge.textContent = `${suggestion.mutualCount} mutual`;
-        
-        const mutualPreview = document.createElement('div');
-        mutualPreview.className = 'mutual-preview';
-        
-        if (suggestion.mutualFriends && suggestion.mutualFriends.length > 0) {
-            const previewNames = suggestion.mutualFriends.slice(0, 2);
-            let previewText = `via ${previewNames.join(', ')}`;
-            if (suggestion.mutualFriends.length > 2) {
-                previewText += ` +${suggestion.mutualFriends.length - 2} more`;
-            }
-            mutualPreview.textContent = previewText;
-        }
-        
-        mutualInfo.appendChild(mutualBadge);
-        mutualInfo.appendChild(mutualPreview);
-    } else {
-        const noMutualText = document.createElement('div');
-        noMutualText.className = 'mutual-preview';
-        noMutualText.textContent = 'Suggested for you';
-        mutualInfo.appendChild(noMutualText);
-    }
-    
-    // Check if friend request was already sent
-    const hasSentRequest = sentRequests.includes(suggestion.username);
-    
-    // Action buttons
-    const actions = document.createElement('div');
-    actions.className = 'suggestion-actions';
-    
-    // Create main action button (Add Friend or Cancel Request)
-    const mainActionBtn = document.createElement('button');
-    mainActionBtn.className = hasSentRequest ? 'add-friend-btn pending' : 'add-friend-btn';
-    mainActionBtn.textContent = hasSentRequest ? 'Cancel Request' : 'Add Friend';
-    mainActionBtn.onclick = () => {
-        if (hasSentRequest) {
-            cancelFriendRequest(suggestion.username);
-        } else {
-            sendFriendRequest(suggestion.username);
-        }
-    };
-    
-    // Style the cancel button differently
-    if (hasSentRequest) {
-        mainActionBtn.style.background = '#666';
-        mainActionBtn.style.color = '#fff';
-    }
-    
-    actions.appendChild(mainActionBtn);
-    
-    // Add "View Mutual" button if there are mutual friends
-    if (suggestion.mutualCount > 0 && suggestion.mutualFriends && suggestion.mutualFriends.length > 0) {
-        const viewMutualBtn = document.createElement('button');
-        viewMutualBtn.className = 'view-mutual-btn';
-        viewMutualBtn.textContent = 'View';
-        
-        // Create dropdown for mutual friends
-        const mutualDropdown = document.createElement('div');
-        mutualDropdown.className = 'suggestion-mutual-dropdown';
-        
-        const mutualList = document.createElement('div');
-        mutualList.className = 'suggestion-mutual-list';
-        
-        // Add a header to the dropdown
-        const header = document.createElement('div');
-        header.style.cssText = `
-            font-weight: bold;
-            color: #1DB954;
-            margin-bottom: 8px;
-            font-size: 12px;
-            text-align: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 6px;
-        `;
-        header.textContent = `Mutual Friends (${suggestion.mutualCount})`;
-        mutualList.appendChild(header);
-        
-        const ul = document.createElement('ul');
-        suggestion.mutualFriends.forEach(mutualFriend => {
-            const li = document.createElement('li');
-            li.textContent = mutualFriend;
-            ul.appendChild(li);
-        });
-        mutualList.appendChild(ul);
-        
-        mutualDropdown.appendChild(mutualList);
-        actions.appendChild(mutualDropdown);
-        
-        // Add click handler for view button
-        viewMutualBtn.onclick = (e) => {
-            e.stopPropagation();
-            const isOpen = mutualList.classList.contains('show');
+            const card = document.createElement('div');
+            card.className = 'suggestion-card';
+            card.style.position = 'relative';
             
-            // Close all other suggestion dropdowns
-            document.querySelectorAll('.suggestion-mutual-list.show').forEach(list => {
-                list.classList.remove('show');
-            });
+            // Add ranking indicator
+            const rankBadge = document.createElement('div');
+            rankBadge.className = `suggestion-rank rank-${rank}`;
+            rankBadge.textContent = rank;
+            card.appendChild(rankBadge);
             
-            // Toggle current dropdown
-            if (!isOpen) {
-                mutualList.classList.add('show');
+            // Main suggestion content
+            const mainContent = document.createElement('div');
+            mainContent.className = 'suggestion-main';
+            
+            mainContent.innerHTML = `
+                <img src="${suggestion.avatar}" alt="${suggestion.username}">
+                <div class="suggestion-info">
+                    <strong>${suggestion.username}</strong>
+                </div>
+            `;
+            
+            // Mutual friends info section
+            const mutualInfo = document.createElement('div');
+            mutualInfo.className = 'suggestion-mutual-info';
+            
+            if (suggestion.mutualCount > 0) {
+                const mutualBadge = document.createElement('div');
+                mutualBadge.className = 'mutual-count-badge';
+                mutualBadge.textContent = `${suggestion.mutualCount} mutual`;
+                
+                const mutualPreview = document.createElement('div');
+                mutualPreview.className = 'mutual-preview';
+                
+                if (suggestion.mutualFriends && suggestion.mutualFriends.length > 0) {
+                    const previewNames = suggestion.mutualFriends.slice(0, 2);
+                    let previewText = `via ${previewNames.join(', ')}`;
+                    if (suggestion.mutualFriends.length > 2) {
+                        previewText += ` +${suggestion.mutualFriends.length - 2} more`;
+                    }
+                    mutualPreview.textContent = previewText;
+                }
+                
+                mutualInfo.appendChild(mutualBadge);
+                mutualInfo.appendChild(mutualPreview);
+            } else {
+                const noMutualText = document.createElement('div');
+                noMutualText.className = 'mutual-preview';
+                noMutualText.textContent = 'Suggested for you';
+                mutualInfo.appendChild(noMutualText);
             }
-        };
-        
-        actions.appendChild(viewMutualBtn);
-    }
-    
-    // Assemble the card
-    card.appendChild(mainContent);
-    card.appendChild(mutualInfo);
-    card.appendChild(actions);
-    
-    return card;
-}
+            
+            // Check if friend request was already sent
+            const hasSentRequest = sentRequests.includes(suggestion.username);
+            
+            // Action buttons
+            const actions = document.createElement('div');
+            actions.className = 'suggestion-actions';
+            
+            // Create main action button (Add Friend or Cancel Request)
+            const mainActionBtn = document.createElement('button');
+            mainActionBtn.className = hasSentRequest ? 'add-friend-btn pending' : 'add-friend-btn';
+            mainActionBtn.textContent = hasSentRequest ? 'Cancel Request' : 'Add Friend';
+            mainActionBtn.onclick = () => {
+                if (hasSentRequest) {
+                    cancelFriendRequest(suggestion.username);
+                } else {
+                    sendFriendRequest(suggestion.username);
+                }
+            };
+            
+            // Style the cancel button differently
+            if (hasSentRequest) {
+                mainActionBtn.style.background = '#666';
+                mainActionBtn.style.color = '#fff';
+            }
+            
+            actions.appendChild(mainActionBtn);
+            
+            // Add "View Mutual" button if there are mutual friends
+            if (suggestion.mutualCount > 0 && suggestion.mutualFriends && suggestion.mutualFriends.length > 0) {
+                const viewMutualBtn = document.createElement('button');
+                viewMutualBtn.className = 'view-mutual-btn';
+                viewMutualBtn.textContent = 'View';
+                
+                // Create dropdown for mutual friends
+                const mutualDropdown = document.createElement('div');
+                mutualDropdown.className = 'suggestion-mutual-dropdown';
+                
+                const mutualList = document.createElement('div');
+                mutualList.className = 'suggestion-mutual-list';
+                
+                // Add a header to the dropdown
+                const header = document.createElement('div');
+                header.style.cssText = `
+                    font-weight: bold;
+                    color: #1DB954;
+                    margin-bottom: 8px;
+                    font-size: 12px;
+                    text-align: center;
+                    border-bottom: 1px solid #333;
+                    padding-bottom: 6px;
+                `;
+                header.textContent = `Mutual Friends (${suggestion.mutualCount})`;
+                mutualList.appendChild(header);
+                
+                const ul = document.createElement('ul');
+                suggestion.mutualFriends.forEach(mutualFriend => {
+                    const li = document.createElement('li');
+                    li.textContent = mutualFriend;
+                    ul.appendChild(li);
+                });
+                mutualList.appendChild(ul);
+                
+                mutualDropdown.appendChild(mutualList);
+                actions.appendChild(mutualDropdown);
+                
+                // Add click handler for view button
+                viewMutualBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    const isOpen = mutualList.classList.contains('show');
+                    
+                    // Close all other suggestion dropdowns
+                    document.querySelectorAll('.suggestion-mutual-list.show').forEach(list => {
+                        list.classList.remove('show');
+                    });
+                    
+                    // Toggle current dropdown
+                    if (!isOpen) {
+                        mutualList.classList.add('show');
+                    }
+                };
+                
+                actions.appendChild(viewMutualBtn);
+            }
+            
+            // Assemble the card
+            card.appendChild(mainContent);
+            card.appendChild(mutualInfo);
+            card.appendChild(actions);
+            
+            return card;
+        }
 
         function logout() {
             sessionStorage.clear();
@@ -1831,6 +2554,13 @@
                 document.querySelectorAll('.suggestion-mutual-list.show').forEach(list => {
                     list.classList.remove('show');
                 });
+            }
+        });
+
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeEditModal();
             }
         });
 
@@ -1876,71 +2606,6 @@
             } catch (error) {
                 console.error('Error fetching AVL tree:', error);
             }
-        }
-
-        function visualizeAVLTree(node, prefix = '', isLeft = true) {
-            if (!node) return '';
-            
-            let result = '';
-            
-            if (node.right) {
-                result += visualizeAVLTree(node.right, prefix + (isLeft ? '│   ' : '    '), false);
-            }
-            
-            result += prefix + (isLeft ? '└── ' : '┌── ') + node.value + ' (h:' + node.height + ')\n';
-            
-            if (node.left) {
-                result += visualizeAVLTree(node.left, prefix + (isLeft ? '    ' : '│   '), true);
-            }
-            
-            return result;
-        }
-
-        function checkAVLProperties(node) {
-            if (!node) return { isValid: true, height: -1 };
-            
-            const leftCheck = checkAVLProperties(node.left);
-            const rightCheck = checkAVLProperties(node.right);
-            
-            const leftHeight = node.left ? node.left.height : -1;
-            const rightHeight = node.right ? node.right.height : -1;
-            const balanceFactor = leftHeight - rightHeight;
-            
-            const isBalanced = Math.abs(balanceFactor) <= 1;
-            const heightCorrect = node.height === Math.max(leftHeight, rightHeight) + 1;
-            
-            return {
-                isValid: leftCheck.isValid && rightCheck.isValid && isBalanced && heightCorrect,
-                height: node.height,
-                balanceFactor: balanceFactor,
-                node: node.value
-            };
-        }
-
-        function addAVLDebugButton() {
-            const debugButton = document.createElement('button');
-            debugButton.textContent = 'Debug My AVL Tree';
-            debugButton.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: #1DB954;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                cursor: pointer;
-                z-index: 1000;
-            `;
-            
-            debugButton.onclick = () => {
-                const currentUser = sessionStorage.getItem('username');
-                if (currentUser) {
-                    getAVLTreeDebug(currentUser);
-                }
-            };
-            
-            document.body.appendChild(debugButton);
         }
     </script>
 </body>

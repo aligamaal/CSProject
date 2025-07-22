@@ -3,29 +3,40 @@
 #include <set>
 #include <iostream>  // For debugging
 #include <string>
+#include <queue>     // For std::priority_queue
 #include "AVLTree.h"
 #include "User.h"
+#include "Post.h"
+#include <chrono>
+#include <ctime>
+using namespace std;
 
 // SocialNetworkManager.cpp
 void SocialNetworkManager::registerUser(string username, string password) {
     lock_guard<mutex> lock(mtx);
     if (users.find(username) != users.end()) {
-        cout << "[DEBUG] User " << username << " already exists in social network\n";
+        std::cout << "[DEBUG] User " << username << " already exists in social network\n";
         return; // Gracefully handle existing user
     }
+    
     users.emplace(username, User(username, password));
-    cout << "[DEBUG] User registered: " << username << endl;
+    
+    // Add to search tree for efficient prefix searching
+    userSearchTree.insert(username);
+    
+    std::cout << "[DEBUG] User registered: " << username << endl;
+    std::cout << "[DEBUG] User search tree now has " << userSearchTree.getSize() << " users" << endl;
 }
 
 bool SocialNetworkManager::authenticateUser(string username, const string password) {
     lock_guard<mutex> lock(mtx);
     auto it = users.find(username);
     if (it == users.end()) {
-        cout << "[DEBUG] User " << username << " not found in social network" << endl;
+        std::cout << "[DEBUG] User " << username << " not found in social network" << endl;
         return false;
     }
     bool result = it->second.checkPassword(password);
-    cout << "[DEBUG] Authentication for " << username << ": " << (result ? "success" : "failed") << endl;
+    std::cout << "[DEBUG] Authentication for " << username << ": " << (result ? "success" : "failed") << endl;
     return result;
 }
 
@@ -46,34 +57,34 @@ void SocialNetworkManager::addFriendship(const string& user1, const string& user
     it2->second.addFriend(user1);
     
     // Enhanced debug output
-    cout << "\n[DEBUG] === Friendship Added ===" << endl;
-    cout << "[DEBUG] Between: " << user1 << " and " << user2 << endl;
+    std::cout << "\n[DEBUG] === Friendship Added ===" << endl;
+    std::cout << "[DEBUG] Between: " << user1 << " and " << user2 << endl;
     
     // Show friends in alphabetical order for both users
     auto friends1 = it1->second.getFriendsList();
-    cout << "[DEBUG] " << user1 << "'s friends (should be alphabetical): ";
+    std::cout << "[DEBUG] " << user1 << "'s friends (should be alphabetical): ";
     for (size_t i = 0; i < friends1.size(); i++) {
-        cout << friends1[i];
-        if (i < friends1.size() - 1) cout << ", ";
+        std::cout << friends1[i];
+        if (i < friends1.size() - 1) std::cout << ", ";
     }
-    cout << endl;
+    std::cout << endl;
     
     auto friends2 = it2->second.getFriendsList();
-    cout << "[DEBUG] " << user2 << "'s friends (should be alphabetical): ";
+    std::cout << "[DEBUG] " << user2 << "'s friends (should be alphabetical): ";
     for (size_t i = 0; i < friends2.size(); i++) {
-        cout << friends2[i];
-        if (i < friends2.size() - 1) cout << ", ";
+        std::cout << friends2[i];
+        if (i < friends2.size() - 1) std::cout << ", ";
     }
-    cout << endl;
+    std::cout << endl;
     
     // Verify alphabetical order
     bool sorted1 = is_sorted(friends1.begin(), friends1.end());
     bool sorted2 = is_sorted(friends2.begin(), friends2.end());
     
-    if (!sorted1) cout << "[WARNING] " << user1 << "'s friends are NOT sorted!" << endl;
-    if (!sorted2) cout << "[WARNING] " << user2 << "'s friends are NOT sorted!" << endl;
+    if (!sorted1) std::cout << "[WARNING] " << user1 << "'s friends are NOT sorted!" << endl;
+    if (!sorted2) std::cout << "[WARNING] " << user2 << "'s friends are NOT sorted!" << endl;
     
-    cout << "[DEBUG] ======================" << endl;
+    std::cout << "[DEBUG] ======================" << endl;
 }
 
 void SocialNetworkManager::removeFriendship(string user1, string user2) {
@@ -102,7 +113,7 @@ vector<string> SocialNetworkManager::getFriends(string username) {
     auto it = users.find(username);
     if (it != users.end()) {
         auto friends = it->second.getFriendsList();
-        cout << "[DEBUG] Getting friends for " << username << ": " << friends.size() << " friends" << endl;
+        std::cout << "[DEBUG] Getting friends for " << username << ": " << friends.size() << " friends" << endl;
         return friends;
     }
     return vector<string>();
@@ -134,40 +145,41 @@ void SocialNetworkManager::removeUser(string username) {
         auto& requests = pair.second;
         requests.erase(remove(requests.begin(), requests.end(), username), requests.end());
     }
-
+    userSearchTree.deleteNode(username);
     users.erase(username);
+      std::cout << "[DEBUG] User removed: " << username << endl;
+    std::cout << "[DEBUG] User search tree now has " << userSearchTree.getSize() << " users" << endl;
 }
-
 void SocialNetworkManager::printAllUsers() {
     lock_guard<mutex> lock(mtx);
-    cout << "\n=== Registered Users ===" << endl;
+    std::cout << "\n=== Registered Users ===" << endl;
     for (const auto& userEntry : users) {
-        cout << "- " << userEntry.first;
+        std::cout << "- " << userEntry.first;
         auto friends = userEntry.second.getFriendsList();
         if (!friends.empty()) {
-            cout << " (Friends: ";
-            for (const auto& f : friends) cout << f << " ";
-            cout << ")";
+            std::cout << " (Friends: ";
+            for (const auto& f : friends) std::cout << f << " ";
+            std::cout << ")";
         }
-        cout << endl;
+        std::cout << endl;
     }
-    cout << "Total users: " << users.size() << endl;
-    cout << "=======================" << endl;
+    std::cout << "Total users: " << users.size() << endl;
+    std::cout << "=======================" << endl;
 }
 
 void SocialNetworkManager::sendRequest(string sender, string receiver) {
     lock_guard<mutex> lock(mtx);
     
     // Debug
-    cout << "[DEBUG] Send request from " << sender << " to " << receiver << endl;
-    cout << "[DEBUG] Checking if users exist..." << endl;
+    std::cout << "[DEBUG] Send request from " << sender << " to " << receiver << endl;
+    std::cout << "[DEBUG] Checking if users exist..." << endl;
     
     if (users.find(sender) == users.end()) {
-        cout << "[DEBUG] Sender " << sender << " not found!" << endl;
+        std::cout << "[DEBUG] Sender " << sender << " not found!" << endl;
         throw runtime_error("Sender not found");
     }
     if (users.find(receiver) == users.end()) {
-        cout << "[DEBUG] Receiver " << receiver << " not found!" << endl;
+        std::cout << "[DEBUG] Receiver " << receiver << " not found!" << endl;
         throw runtime_error("Receiver not found");
     }
     
@@ -195,9 +207,9 @@ void SocialNetworkManager::sendRequest(string sender, string receiver) {
     sentRequests[sender].push_back(receiver);
     receivedRequests[receiver].push_back(sender);
     
-    cout << "[DEBUG] Friend request sent successfully" << endl;
-    cout << "[DEBUG] Sender " << sender << " now has " << sentRequests[sender].size() << " sent requests" << endl;
-    cout << "[DEBUG] Receiver " << receiver << " now has " << receivedRequests[receiver].size() << " received requests" << endl;
+    std::cout << "[DEBUG] Friend request sent successfully" << endl;
+    std::cout << "[DEBUG] Sender " << sender << " now has " << sentRequests[sender].size() << " sent requests" << endl;
+    std::cout << "[DEBUG] Receiver " << receiver << " now has " << receivedRequests[receiver].size() << " received requests" << endl;
 }
 
 void SocialNetworkManager::acceptRequest(string receiver, string sender) {
@@ -215,7 +227,7 @@ void SocialNetworkManager::acceptRequest(string receiver, string sender) {
     if (it1 != users.end() && it2 != users.end()) {
         it1->second.addFriend(receiver);
         it2->second.addFriend(sender);
-        cout << "[DEBUG] Friendship added between " << sender << " and " << receiver << endl;
+        std::cout << "[DEBUG] Friendship added between " << sender << " and " << receiver << endl;
     }
 
     // Remove from request lists
@@ -337,6 +349,53 @@ void SocialNetworkManager::cancelRequest(string sender, string receiver) {
         );
     }
 }
+// NEW BST-BASED SEARCH IMPLEMENTATION
+
+vector<string> SocialNetworkManager::searchUsersByPrefix(const string& prefix, const string& currentUser) {
+    lock_guard<mutex> lock(mtx);
+    
+    if (prefix.empty()) {
+        return vector<string>(); // Return empty for empty prefix
+    }
+    
+    // Use BST-based search on the user search tree
+    vector<string> matchingUsers = userSearchTree.searchByPrefix(prefix);
+    
+    // Filter out current user if specified
+    if (!currentUser.empty()) {
+        matchingUsers.erase(
+            remove(matchingUsers.begin(), matchingUsers.end(), currentUser),
+            matchingUsers.end()
+        );
+    }
+    
+    std::cout << "[DEBUG] BST Search for prefix '" << prefix << "' found " 
+         << matchingUsers.size() << " users" << endl;
+    
+    return matchingUsers;
+}
+
+vector<string> SocialNetworkManager::searchFriendsByPrefix(const string& username, const string& prefix) {
+    lock_guard<mutex> lock(mtx);
+    
+    auto it = users.find(username);
+    if (it == users.end()) {
+        throw runtime_error("User not found: " + username);
+    }
+    
+    if (prefix.empty()) {
+        return vector<string>(); // Return empty for empty prefix
+    }
+    
+    // Use BST-based search on the user's friends tree
+    vector<string> matchingFriends = it->second.friends.searchByPrefix(prefix);
+    
+    std::cout << "[DEBUG] BST Search for friends of '" << username 
+         << "' with prefix '" << prefix << "' found " 
+         << matchingFriends.size() << " friends" << endl;
+    
+    return matchingFriends;
+}
 
 // Add this method to get all users (useful for debugging and search)
 vector<string> SocialNetworkManager::getAllUsers() {
@@ -428,4 +487,104 @@ crow::json::wvalue SocialNetworkManager::convertTreeToJSON(AVLNode<string>* node
     }
     
     return result;
+}
+void SocialNetworkManager::addPost(const std::string& username, const std::string& content) {
+    std::lock_guard<std::mutex> lock(mtx);
+    auto it = users.find(username);
+    if (it == users.end()) throw std::runtime_error("User not found");
+    it->second.addPost(content);
+}
+
+std::vector<Post> SocialNetworkManager::getTimeline(const std::string& username) {
+    std::lock_guard<std::mutex> lock(mtx);
+    auto userIt = users.find(username);
+    if (userIt == users.end()) throw std::runtime_error("User not found");
+    
+    // Get friends list
+    std::vector<std::string> friends = userIt->second.getFriendsList();
+    std::vector<const std::vector<Post>*> postLists;
+    
+    // Add current user's posts
+    postLists.push_back(&(userIt->second.getPosts()));
+    
+    // Add friends' posts
+    for (const auto& friendName : friends) {
+        auto friendIt = users.find(friendName);
+        if (friendIt != users.end()) {
+            postLists.push_back(&(friendIt->second.getPosts()));
+        }
+    }
+
+    // Priority queue for k-way merge (max-heap by timestamp)
+    auto cmp = [](const std::pair<const Post*, int>& a, const std::pair<const Post*, int>& b) {
+        return a.first->getTimestamp() < b.first->getTimestamp();
+    };
+    std::priority_queue<
+        std::pair<const Post*, int>,
+        std::vector<std::pair<const Post*, int>>,
+        decltype(cmp)
+    > pq(cmp);
+
+    // Track current indices for each list
+    std::vector<int> currentIndices(postLists.size());
+    
+    // Initialize heap with last element of each list (most recent)
+    for (size_t i = 0; i < postLists.size(); i++) {
+        if (!postLists[i]->empty()) {
+            int lastIndex = postLists[i]->size() - 1;
+            pq.push({&((*postLists[i])[lastIndex]), static_cast<int>(i)});
+            currentIndices[i] = lastIndex;
+        }
+    }
+
+    // Merge posts
+    std::vector<Post> timeline;
+    while (!pq.empty()) {
+        auto topElement = pq.top();
+        const Post* post = topElement.first;
+        int listIdx = topElement.second;
+        pq.pop();
+        timeline.push_back(*post);
+        
+        // Move to next post in this list (going backwards since we want newest first)
+        currentIndices[listIdx]--;
+        if (currentIndices[listIdx] >= 0) {
+            pq.push({&((*postLists[listIdx])[currentIndices[listIdx]]), listIdx});
+        }
+    }
+    
+    return timeline;
+}
+
+// Add these new methods to SocialNetworkManager class:
+
+void SocialNetworkManager::deletePost(const std::string& username, size_t postIndex) {
+    std::lock_guard<std::mutex> lock(mtx);
+    auto it = users.find(username);
+    if (it == users.end()) throw std::runtime_error("User not found");
+    
+    auto& posts = it->second.getPosts();
+    if (postIndex >= posts.size()) {
+        throw std::runtime_error("Invalid post index");
+    }
+    
+    // Since we can't modify the const vector, we need to add a non-const getter in User class
+    // For now, throw an error indicating this needs to be implemented
+    throw std::runtime_error("Post deletion requires modification to User class");
+}
+
+std::vector<Post> SocialNetworkManager::getUserPosts(const std::string& username) {
+    std::lock_guard<std::mutex> lock(mtx);
+    auto it = users.find(username);
+    if (it == users.end()) throw std::runtime_error("User not found");
+    
+    return it->second.getPosts();
+}
+void SocialNetworkManager::editPost(const std::string& username, size_t postIndex, const std::string& newContent) {
+    std::lock_guard<std::mutex> lock(mtx);
+    auto it = users.find(username);
+    if (it == users.end()) throw std::runtime_error("User not found");
+    
+    it->second.editPost(postIndex, newContent);
+    std::cout << "[DEBUG] Post edited by " << username << " at index " << postIndex << std::endl;
 }

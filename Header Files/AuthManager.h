@@ -1,28 +1,23 @@
-#pragma once
 #ifndef AUTHMANAGER_H
 #define AUTHMANAGER_H
-#include "User.h"
+
+#include <string>
 #include <unordered_map>
 #include <mutex>
-#include <string>
-#include <random>
-#include <sstream>
-#include <memory>
-#include <iostream>
-#include <fstream>
-#include <filesystem>
-using namespace std;
+#include "User.h"
 
 class AuthManager {
-    private:
-    unordered_map<string , User> users;
-    unordered_map<string , string> sessions;
-    mutex data_mutex;
-    string generateToken();
-
-    public:
-    bool registerUser(const string& , const string&);
-    string loginUser(const string& , const string&);
-    string* getUsernameFromToken(const string&);
+private:
+    std::unordered_map<std::string, User> users;
+    std::unordered_map<std::string, std::string> sessions;  // token -> username
+    std::mutex data_mutex;
+    
+    std::string generateToken();
+    
+public:
+    bool registerUser(const std::string& username, const std::string& password);
+    std::string loginUser(const std::string& username, const std::string& password);
+    std::string* getUsernameFromToken(const std::string& token);
 };
-#endif
+
+#endif // AUTHMANAGER_H

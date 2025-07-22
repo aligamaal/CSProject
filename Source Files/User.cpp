@@ -9,8 +9,10 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <stdexcept>
 #include "AVLTree.h"
 #include "User.h"
+#include "Post.h"
 using namespace std;
 
 User::User() {
@@ -65,4 +67,31 @@ bool User::isFriendWith(const string& friendName) {
 
 vector<string> User::getFriendsList() const {
     return friends.inOrderTraversal();
+}
+
+void User::addPost(const std::string& content) {
+    posts_.push_back(Post(content, userName));
+}
+
+const std::vector<Post>& User::getPosts() const {
+    return posts_;
+}
+
+std::vector<Post>& User::getPostsMutable() {
+    return posts_;
+}
+
+void User::deletePost(size_t index) {
+    if (index >= posts_.size()) {
+        throw std::out_of_range("Invalid post index");
+    }
+    posts_.erase(posts_.begin() + index);
+}
+
+void User::editPost(size_t index, const std::string& newContent) {
+    if (index >= posts_.size()) {
+        throw std::out_of_range("Invalid post index");
+    }
+    // Since Post class stores content as const, we need to replace the post
+    posts_[index] = Post(newContent, userName);
 }

@@ -1,3 +1,4 @@
+// Add these includes at the top of Main.cpp
 #define CROW_USE_ASIO
 #include "crow.h"
 #include "User.h"
@@ -15,6 +16,13 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <chrono>      // For time measurement
+#include <thread>      // For sleep_for
+#include <ctime>       // For time functions
+#include <iomanip>     // For time formatting
+#include <algorithm>   // For min function
+
+using namespace std;
 
 int main()
 {   
@@ -127,13 +135,13 @@ CROW_ROUTE(app, "/api/signup").methods("POST"_method, "OPTIONS"_method)
 
 // Debug endpoint for AVL tree visualization
 CROW_ROUTE(app, "/api/debug/avl-tree/<string>").methods("GET"_method)
-([auth, socialNetwork](const crow::request& req, string username) {
+([auth, socialNetwork](const crow::request& req, std::string username) {
     crow::response res;
     res.set_header("Content-Type", "application/json");
     
     // Optional: Add authentication check
-    string token = req.get_header_value("Authorization");
-    string* currentUser = auth->getUsernameFromToken(token);
+    std::string token = req.get_header_value("Authorization");
+    std::string* currentUser = auth->getUsernameFromToken(token);
     
     if (!currentUser) {
         res.code = 401;
@@ -146,30 +154,30 @@ CROW_ROUTE(app, "/api/debug/avl-tree/<string>").methods("GET"_method)
     
     crow::json::wvalue result;
     
-     try {
+    try {
         auto treeInfo = socialNetwork->getUserAVLTreeInfo(username);
         
         result["success"] = true;
         result["username"] = username;
-        result["tree"] = std::move(treeInfo.treeStructure); // Use std::move
+        result["tree"] = move(treeInfo.treeStructure); // No std::move needed here
         result["height"] = treeInfo.height;
         result["count"] = treeInfo.nodeCount;
         result["isBalanced"] = treeInfo.isBalanced;
-        result["visual"] = std::move(treeInfo.visualRepresentation); // Use std::move
+        result["visual"] = treeInfo.visualRepresentation; // No std::move needed here
         
         // Add the friends list for verification
         auto friends = socialNetwork->getFriends(username);
         crow::json::wvalue friendsArray;
         for (size_t i = 0; i < friends.size(); ++i) {
-            friendsArray[i] = friends[i];
+            friendsArray[static_cast<int>(i)] = friends[i];
         }
-        result["friendsList"] = std::move(friendsArray);
+        result["friendsList"] = move(friendsArray); // No std::move needed
         
         res.code = 200;
     } catch (const std::exception& e) {
         res.code = 500;
         result["success"] = false;
-        result["message"] = string("Error getting AVL tree info: ") + e.what();
+        result["message"] = std::string("Error getting AVL tree info: ") + e.what();
     }
     
     res.add_header("Access-Control-Allow-Origin", "*");
@@ -177,15 +185,14 @@ CROW_ROUTE(app, "/api/debug/avl-tree/<string>").methods("GET"_method)
     return res;
 });
 
-// Additional debug endpoint to check all users' AVL trees
 CROW_ROUTE(app, "/api/debug/all-avl-trees").methods("GET"_method)
 ([auth, socialNetwork](const crow::request& req) {
     crow::response res;
     res.set_header("Content-Type", "application/json");
     
     // Optional: Add authentication check
-    string token = req.get_header_value("Authorization");
-    string* currentUser = auth->getUsernameFromToken(token);
+    std::string token = req.get_header_value("Authorization");
+    std::string* currentUser = auth->getUsernameFromToken(token);
     
     if (!currentUser) {
         res.code = 401;
@@ -210,23 +217,23 @@ CROW_ROUTE(app, "/api/debug/all-avl-trees").methods("GET"_method)
                 userTree["friendCount"] = treeInfo.nodeCount;
                 userTree["treeHeight"] = treeInfo.height;
                 userTree["isBalanced"] = treeInfo.isBalanced;
-                usersTreeInfo[i] = std::move(userTree);
+                usersTreeInfo[static_cast<int>(i)] = move(userTree); // Cast to int
             } catch (const std::exception& e) {
                 crow::json::wvalue userTree;
                 userTree["username"] = allUsers[i];
                 userTree["error"] = e.what();
-                usersTreeInfo[i] = std::move(userTree);
+                usersTreeInfo[static_cast<int>(i)] = move(userTree); // Cast to int
             }
         }
         
         result["success"] = true;
-        result["users"] = std::move(usersTreeInfo);
-        result["totalUsers"] = allUsers.size();
+        result["users"] = move(usersTreeInfo); // No std::move needed
+        result["totalUsers"] = static_cast<int>(allUsers.size());
         res.code = 200;
     } catch (const std::exception& e) {
         res.code = 500;
         result["success"] = false;
-        result["message"] = string("Error getting AVL trees info: ") + e.what();
+        result["message"] = std::string("Error getting AVL trees info: ") + e.what();
     }
     
     res.add_header("Access-Control-Allow-Origin", "*");
@@ -364,65 +371,117 @@ CROW_ROUTE(app, "/api/debug/all-avl-trees").methods("GET"_method)
     });
 
     // Search users by prefix
-    CROW_ROUTE(app, "/api/users/search/<string>").methods("GET"_method)
-    ([auth, socialNetwork](const crow::request& req, string prefix) {
-        crow::response res;
-        res.set_header("Content-Type", "application/json");
-        
-        string token = req.get_header_value("Authorization");
-        string* currentUser = auth->getUsernameFromToken(token);
-        
-        if (!currentUser) {
-            res.code = 401;
-            crow::json::wvalue result;
-            result["success"] = false;
-            result["message"] = "Unauthorized";
-            res.write(result.dump());
-            return res;
-        }
-        
+    // NEW ENDPOINT: Search friends by prefix using BST
+CROW_ROUTE(app, "/api/friends/search/<string>").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req, std::string prefix) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    std::string token = req.get_header_value("Authorization");
+    std::string* currentUser = auth->getUsernameFromToken(token);
+    
+    if (!currentUser) {
+        res.code = 401;
         crow::json::wvalue result;
-        
-        try {
-            auto allUsers = socialNetwork->getAllUsers();
-            result["success"] = true;
-            crow::json::wvalue usersArray;
-            int index = 0;
-            
-            // Convert prefix to lowercase for case-insensitive search
-            std::transform(prefix.begin(), prefix.end(), prefix.begin(), ::tolower);
-            
-            for (const auto& user : allUsers) {
-                string lowerUser = user;
-                std::transform(lowerUser.begin(), lowerUser.end(), lowerUser.begin(), ::tolower);
-                
-                if (user != *currentUser && lowerUser.find(prefix) == 0) {
-                    crow::json::wvalue userObj;
-                    userObj["username"] = user;
-                    userObj["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + user.substr(0, 1);
-                    
-                    if (socialNetwork->areFriends(*currentUser, user)) {
-                        userObj["status"] = "friend";
-                    } else {
-                        userObj["status"] = "not_friend";
-                    }
-                    
-                    usersArray[index++] = std::move(userObj);
-                }
-            }
-            result["users"] = std::move(usersArray);
-            result["count"] = index;
-            res.code = 200;
-        } catch (const std::exception& e) {
-            res.code = 500;
-            result["success"] = false;
-            result["message"] = e.what();
-        }
-        
-        res.add_header("Access-Control-Allow-Origin", "*");
+        result["success"] = false;
+        result["message"] = "Unauthorized";
         res.write(result.dump());
         return res;
-    });
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        // Use BST-based search on user's friends
+        auto matchingFriends = socialNetwork->searchFriendsByPrefix(*currentUser, prefix);
+        
+        result["success"] = true;
+        crow::json::wvalue friendsArray;
+        
+        for (size_t i = 0; i < matchingFriends.size(); ++i) {
+            crow::json::wvalue friendObj;
+            friendObj["username"] = matchingFriends[i];
+            friendObj["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + matchingFriends[i].substr(0, 1);
+            friendsArray[static_cast<int>(i)] = move(friendObj); // Cast to int
+        }
+        
+        result["friends"] = move(friendsArray); // No std::move needed
+        result["count"] = static_cast<int>(matchingFriends.size());
+        result["searchMethod"] = "BST-based"; // Indicator that BST search was used
+        res.code = 200;
+        
+        std::cout << "[DEBUG] BST friends search for '" << prefix << "' returned " 
+                  << matchingFriends.size() << " results" << std::endl;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = e.what();
+        std::cout << "[ERROR] BST friends search error: " << e.what() << std::endl;
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+CROW_ROUTE(app, "/api/debug/search-performance/<string>").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req, std::string prefix) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    std::string token = req.get_header_value("Authorization");
+    std::string* currentUser = auth->getUsernameFromToken(token);
+    
+    if (!currentUser) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        auto start = std::chrono::high_resolution_clock::now();
+        
+        // BST-based search
+        auto bstResults = socialNetwork->searchUsersByPrefix(prefix, *currentUser);
+        
+        auto end = std::chrono::high_resolution_clock::now();
+        auto bstDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        
+        result["success"] = true;
+        result["prefix"] = prefix;
+        result["bstResultCount"] = static_cast<int>(bstResults.size());
+        result["bstSearchTime_microseconds"] = static_cast<int>(bstDuration.count());
+        result["searchMethod"] = "AVL Tree BST-based search";
+        
+        // Include first few results for verification
+        crow::json::wvalue resultsArray;
+        int maxResults = std::min(5, static_cast<int>(bstResults.size()));
+        for (int i = 0; i < maxResults; ++i) {
+            resultsArray[i] = bstResults[i];
+        }
+        result["sampleResults"] = move(resultsArray); // No std::move needed
+        
+        res.code = 200;
+        
+        std::cout << "[DEBUG] BST search performance for '" << prefix << "':" << std::endl;
+        std::cout << "  - Results: " << bstResults.size() << std::endl;
+        std::cout << "  - Time: " << bstDuration.count() << " microseconds" << std::endl;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
 
     // Debug endpoint to print all users
     CROW_ROUTE(app, "/api/debug/users").methods("GET"_method)
@@ -878,6 +937,502 @@ CROW_ROUTE(app, "/api/debug/all-avl-trees").methods("GET"_method)
     res.write(result.dump());
     return res;
 });
+// Add these endpoints to your Main.cpp file before app.port(18080).multithreaded().run();
+
+// Create a new post
+CROW_ROUTE(app, "/api/posts").methods("POST"_method)
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    auto body = crow::json::load(req.body);
+    crow::json::wvalue result;
+    
+    if (!body || !body.has("content")) {
+        res.code = 400;
+        result["success"] = false;
+        result["message"] = "Missing post content";
+        res.write(result.dump());
+        return res;
+    }
+    
+    try {
+        string content = body["content"].s();
+        
+        // Validate content
+        if (content.empty()) {
+            res.code = 400;
+            result["success"] = false;
+            result["message"] = "Post content cannot be empty";
+            res.write(result.dump());
+            return res;
+        }
+        
+        if (content.length() > 500) { // Limit post length
+            res.code = 400;
+            result["success"] = false;
+            result["message"] = "Post content too long (max 500 characters)";
+            res.write(result.dump());
+            return res;
+        }
+        
+        socialNetwork->addPost(*username, content);
+        
+        result["success"] = true;
+        result["message"] = "Post created successfully";
+        res.code = 201;
+        
+        std::cout << "[DEBUG] New post created by " << *username << ": " << content << std::endl;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error creating post: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+// Add this endpoint to your Main.cpp file, after the other search endpoints but before app.port(18080).multithreaded().run();
+
+// Search all users by prefix (BST-based)
+CROW_ROUTE(app, "/api/users/search/<string>").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req, std::string prefix) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    std::string token = req.get_header_value("Authorization");
+    std::string* currentUser = auth->getUsernameFromToken(token);
+    
+    if (!currentUser) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        // Use BST-based search to find users
+        auto matchingUsers = socialNetwork->searchUsersByPrefix(prefix, *currentUser);
+        
+        result["success"] = true;
+        crow::json::wvalue usersArray;
+        
+        // Convert to the format expected by frontend
+        for (size_t i = 0; i < matchingUsers.size(); ++i) {
+            crow::json::wvalue userObj;
+            userObj["username"] = matchingUsers[i];
+            userObj["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + 
+                                matchingUsers[i].substr(0, 1);
+            
+            // Check relationship status
+            if (socialNetwork->areFriends(*currentUser, matchingUsers[i])) {
+                userObj["status"] = "friend";
+            } else {
+                userObj["status"] = "not_friend";
+            }
+            
+            usersArray[static_cast<int>(i)] = std::move(userObj);
+        }
+        
+        result["users"] = std::move(usersArray);
+        result["count"] = static_cast<int>(matchingUsers.size());
+        result["searchMethod"] = "BST-based";
+        res.code = 200;
+        
+        std::cout << "[DEBUG] User search for '" << prefix << "' returned " 
+                  << matchingUsers.size() << " results" << std::endl;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = std::string("Search error: ") + e.what();
+        std::cout << "[ERROR] User search error: " << e.what() << std::endl;
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
+// Get timeline (user's posts + friends' posts)
+CROW_ROUTE(app, "/api/timeline").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        auto timeline = socialNetwork->getTimeline(*username);
+        
+        result["success"] = true;
+        crow::json::wvalue postsArray;
+        
+        // Convert posts to JSON (newest first - already sorted by k-way merge)
+        for (size_t i = 0; i < timeline.size(); ++i) {
+            crow::json::wvalue postObj;
+            postObj["content"] = timeline[i].getContent();
+            postObj["author"] = timeline[i].getAuthor();
+            postObj["timestamp"] = static_cast<int64_t>(timeline[i].getTimestamp());
+            
+            // Convert timestamp to readable format
+            char timeBuffer[100];
+            std::time_t timestamp = timeline[i].getTimestamp();
+            std::strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", std::localtime(&timestamp));
+            postObj["dateTime"] = std::string(timeBuffer);
+            
+            // Add author avatar
+            postObj["authorAvatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + 
+                                      timeline[i].getAuthor().substr(0, 1);
+            
+            // Check if this is user's own post
+            postObj["isOwnPost"] = (timeline[i].getAuthor() == *username);
+            
+            postsArray[i] = std::move(postObj);
+        }
+        
+        result["posts"] = std::move(postsArray);
+        result["count"] = timeline.size();
+        res.code = 200;
+        
+        std::cout << "[DEBUG] Timeline requested by " << *username << ", returned " 
+                  << timeline.size() << " posts" << std::endl;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error fetching timeline: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
+// Get only user's own posts
+CROW_ROUTE(app, "/api/posts/<string>").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req, string targetUsername) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* currentUser = auth->getUsernameFromToken(token);
+    
+    if (!currentUser) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        auto posts = socialNetwork->getUserPosts(targetUsername);
+        
+        result["success"] = true;
+        crow::json::wvalue postsArray;
+        
+        // Return posts in reverse order (newest first)
+        for (int i = posts.size() - 1; i >= 0; --i) {
+            crow::json::wvalue postObj;
+            postObj["content"] = posts[i].getContent();
+            postObj["author"] = posts[i].getAuthor();
+            postObj["timestamp"] = static_cast<int64_t>(posts[i].getTimestamp());
+            postObj["index"] = i; // Include index for potential deletion
+            
+            // Convert timestamp to readable format
+            char timeBuffer[100];
+            std::time_t timestamp = posts[i].getTimestamp();
+            std::strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d %H:%M:%S", std::localtime(&timestamp));
+            postObj["dateTime"] = std::string(timeBuffer);
+            
+            postsArray[posts.size() - 1 - i] = std::move(postObj);
+        }
+        
+        result["posts"] = std::move(postsArray);
+        result["count"] = posts.size();
+        result["username"] = targetUsername;
+        res.code = 200;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error fetching posts: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
+// Debug endpoint to test timeline generation efficiency
+CROW_ROUTE(app, "/api/debug/timeline-performance").methods("GET"_method)
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        auto start = std::chrono::high_resolution_clock::now();
+        
+        // Get timeline
+        auto timeline = socialNetwork->getTimeline(*username);
+        
+        auto end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        
+        // Get friend count for context
+        auto friends = socialNetwork->getFriends(*username);
+        
+        result["success"] = true;
+        result["username"] = *username;
+        result["friendCount"] = friends.size();
+        result["totalPosts"] = timeline.size();
+        result["timelineFetchTime_microseconds"] = (int)duration.count();
+        result["algorithm"] = "k-way merge with priority queue";
+        
+        // Calculate average posts per user
+        if (!friends.empty()) {
+            result["averagePostsPerFriend"] = (double)timeline.size() / (friends.size() + 1);
+        }
+        
+        res.code = 200;
+        
+        std::cout << "[DEBUG] Timeline performance for " << *username << ":" << std::endl;
+        std::cout << "  - Friends: " << friends.size() << std::endl;
+        std::cout << "  - Total posts: " << timeline.size() << std::endl;
+        std::cout << "  - Fetch time: " << duration.count() << " microseconds" << std::endl;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error testing timeline performance: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
+// Optional: Endpoint to delete a post (requires User class modification)
+CROW_ROUTE(app, "/api/posts/<int>").methods("DELETE"_method)
+([auth, socialNetwork](const crow::request& req, int postIndex) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        // Note: This requires modification to User class to support post deletion
+        result["success"] = false;
+        result["message"] = "Post deletion not yet implemented - requires User class modification";
+        res.code = 501; // Not Implemented
+        
+        // When implemented, uncomment:
+        // socialNetwork->deletePost(*username, postIndex);
+        // result["success"] = true;
+        // result["message"] = "Post deleted successfully";
+        // res.code = 200;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error deleting post: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+CROW_ROUTE(app, "/api/posts/<int>").methods("PUT"_method)
+([auth, socialNetwork](const crow::request& req, int postIndex) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    auto body = crow::json::load(req.body);
+    crow::json::wvalue result;
+    
+    if (!body || !body.has("content")) {
+        res.code = 400;
+        result["success"] = false;
+        result["message"] = "Missing new content";
+        res.write(result.dump());
+        return res;
+    }
+    
+    try {
+        string newContent = body["content"].s();
+        
+        if (newContent.empty()) {
+            res.code = 400;
+            result["success"] = false;
+            result["message"] = "Post content cannot be empty";
+            res.write(result.dump());
+            return res;
+        }
+        
+        if (newContent.length() > 500) {
+            res.code = 400;
+            result["success"] = false;
+            result["message"] = "Post content too long (max 500 characters)";
+            res.write(result.dump());
+            return res;
+        }
+        
+        socialNetwork->editPost(*username, postIndex, newContent);
+        
+        result["success"] = true;
+        result["message"] = "Post updated successfully";
+        res.code = 200;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error editing post: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
+// Create bulk posts (for testing timeline performance)
+CROW_ROUTE(app, "/api/debug/bulk-posts").methods("POST"_method)
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
+        crow::json::wvalue result;
+        result["success"] = false;
+        result["message"] = "Unauthorized";
+        res.write(result.dump());
+        return res;
+    }
+    
+    auto body = crow::json::load(req.body);
+    crow::json::wvalue result;
+    
+    if (!body || !body.has("count")) {
+        res.code = 400;
+        result["success"] = false;
+        result["message"] = "Missing count parameter";
+        res.write(result.dump());
+        return res;
+    }
+    
+    try {
+        int count = body["count"].i();
+        
+        if (count <= 0 || count > 100) {
+            res.code = 400;
+            result["success"] = false;
+            result["message"] = "Count must be between 1 and 100";
+            res.write(result.dump());
+            return res;
+        }
+        
+        // Create multiple posts for testing
+        for (int i = 0; i < count; ++i) {
+            std::string content = "Test post #" + std::to_string(i + 1) + 
+                                " from " + *username + " at " + 
+                                std::to_string(std::time(nullptr));
+            socialNetwork->addPost(*username, content);
+            
+            // Small delay to ensure different timestamps
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
+        
+        result["success"] = true;
+        result["message"] = "Created " + std::to_string(count) + " test posts";
+        result["count"] = count;
+        res.code = 201;
+        
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = string("Error creating bulk posts: ") + e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
+
 
     // Dashboard endpoint
     CROW_ROUTE(app, "/dashboard").methods("GET"_method, "OPTIONS"_method)
