@@ -404,6 +404,7 @@
             align-items: center;
             gap: 1rem;
             transition: transform 0.2s;
+            position: relative;
         }
 
         .friend-card:hover {
@@ -479,6 +480,357 @@
         .dashboard-content {
             display: none;
         }
+
+        /* Enhanced Mutual Friends Dropdown Styles */
+        .mutual-dropdown {
+            position: relative;
+            margin-top: 8px;
+        }
+
+        .mutual-toggle {
+            background: #333;
+            color: #1DB954;
+            border: 1px solid #1DB954;
+            border-radius: 4px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .mutual-toggle:hover {
+            background: #1DB954;
+            color: #000;
+        }
+
+        .mutual-toggle.loading {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .mutual-toggle::after {
+            content: '▼';
+            font-size: 10px;
+            transition: transform 0.2s;
+        }
+
+        .mutual-toggle.open::after {
+            transform: rotate(180deg);
+        }
+
+        .mutual-list {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #2a2a2a;
+            border: 1px solid #1DB954;
+            border-radius: 4px;
+            padding: 10px;
+            z-index: 10;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .mutual-list.show {
+            display: block;
+        }
+
+        .mutual-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .mutual-list li {
+            color: #ccc;
+            margin-bottom: 8px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .mutual-list li:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .mutual-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .mutual-count {
+            background: #1DB954;
+            color: #000;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .no-mutual-friends {
+            color: #888;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            border-top-color: #1DB954;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Friend card with mutual friends info */
+        .friend-card-enhanced {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .friend-card-main {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .friend-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Enhanced Friend Suggestions Styles */
+        .suggestion-card {
+            background: #2c2c2c;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            margin-left: 1rem;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .suggestion-card:hover {
+            transform: translateY(-2px);
+            background: #333;
+            border-color: #1DB954;
+        }
+
+        .suggestion-card img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .suggestion-main {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-info {
+            flex: 1;
+        }
+
+        .suggestion-info strong {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }
+
+        .suggestion-mutual-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mutual-count-badge {
+            background: linear-gradient(45deg, #1DB954, #1ed760);
+            color: #000;
+            border-radius: 12px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .mutual-count-badge::before {
+            content: '👥';
+            font-size: 8px;
+        }
+
+        .mutual-preview {
+            font-size: 11px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .add-friend-btn {
+            background: #1DB954;
+            color: #000;
+            border: none;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .add-friend-btn:hover {
+            background: #1ed760;
+            transform: scale(1.05);
+        }
+
+        .view-mutual-btn {
+            background: transparent;
+            color: #1DB954;
+            border: 1px solid #1DB954;
+            border-radius: 15px;
+            padding: 4px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-mutual-btn:hover {
+            background: #1DB954;
+            color: #000;
+        }
+
+        .suggestion-mutual-dropdown {
+            position: relative;
+        }
+
+        .suggestion-mutual-list {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a1a1a;
+            border: 1px solid #1DB954;
+            border-radius: 8px;
+            padding: 12px;
+            z-index: 15;
+            max-height: 180px;
+            overflow-y: auto;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            min-width: 200px;
+        }
+
+        .suggestion-mutual-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .suggestion-mutual-list li {
+            color: #fff;
+            margin-bottom: 8px;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: background-color 0.2s;
+            background: #2a2a2a;
+            border-left: 3px solid #1DB954;
+        }
+
+        .suggestion-mutual-list li:hover {
+            background-color: #333;
+            color: #1DB954;
+        }
+
+        .suggestion-mutual-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .suggestion-loading {
+            text-align: center;
+            color: #888;
+            font-size: 12px;
+            padding: 1rem;
+            margin-left: 1rem;
+        }
+
+        .no-suggestions {
+            color: #888;
+            font-size: 12px;
+            padding: 1rem;
+            margin-left: 1rem;
+            text-align: center;
+            font-style: italic;
+        }
+
+        /* Ranking indicators */
+        .suggestion-rank {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .suggestion-rank.rank-1 {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+        }
+
+        .suggestion-rank.rank-2 {
+            background: linear-gradient(45deg, #C0C0C0, #A0A0A0);
+        }
+
+        .suggestion-rank.rank-3 {
+            background: linear-gradient(45deg, #CD7F32, #B8860B);
+        }
+
+        .add-friend-btn.pending {
+            background: #666 !important;
+            color: #fff !important;
+        }
+
+        .add-friend-btn.pending:hover {
+            background: #777 !important;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -524,7 +876,7 @@
             </div>
             <div class="user-menu">
                 <span id="currentUsername"></span>
-                <img id="userAvatar" class="user-avatar" src="" alt="User">
+                <img id="userAvatar" class="user-avatar" src="/placeholder.svg" alt="User">
                 <button onclick="logout()" style="background: none; border: none; color: #888; cursor: pointer;">Logout</button>
             </div>
         </header>
@@ -543,14 +895,19 @@
                 
                 <div class="menu-section">
                     <div class="menu-title">Friend Suggestions</div>
-                    <div id="friendSuggestions"></div>
+                    <div id="friendSuggestions">
+                        <div class="suggestion-loading">
+                            <div class="loading-spinner"></div>
+                            Loading suggestions...
+                        </div>
+                    </div>
                 </div>
             </aside>
 
             <!-- Content Area -->
             <main class="content" id="mainContent">
                 <div class="post-creation" id="postCreation">
-                    <img id="postUserAvatar" class="user-avatar" src="" alt="You">
+                    <img id="postUserAvatar" class="user-avatar" src="/placeholder.svg" alt="You">
                     <textarea class="post-input" placeholder="What's on your mind? Share a song or thought..." rows="1"></textarea>
                     <button class="post-btn">Post</button>
                 </div>
@@ -579,11 +936,6 @@
                 <div class="friends-section">
                     <h3 class="section-title">Your Friends</h3>
                     <div id="friendsList"></div>
-                </div>
-                
-                <div class="friends-section">
-                    <h3 class="section-title">Mutual Connections</h3>
-                    <div id="mutualConnections"></div>
                 </div>
             </aside>
         </div>
@@ -907,7 +1259,8 @@
                 if (data.success) {
                     alert('Friend request sent!');
                     await loadUserData();
-                    searchUsers(); // Refresh search results
+                    loadFriendSuggestions(); // Refresh suggestions
+                    searchUsers(); // Refresh search results if in search view
                 } else {
                     alert(data.message || 'Failed to send friend request');
                 }
@@ -960,6 +1313,7 @@
                     alert('Friend request accepted!');
                     await loadUserData();
                     loadFriendsSidebar();
+                    loadFriendSuggestions(); // Refresh suggestions
                     
                     // Refresh current view
                     const activeMenu = document.querySelector('.menu-item.active');
@@ -1029,6 +1383,7 @@
                     alert('Friend removed');
                     await loadUserData();
                     loadFriendsSidebar();
+                    loadFriendSuggestions(); // Refresh suggestions
                     
                     // Refresh current view
                     const activeMenu = document.querySelector('.menu-item.active');
@@ -1126,23 +1481,13 @@
                 }
             }
             
-            // Load friends list
+            // Load friends list with mutual friends functionality
             const friendsContainer = document.getElementById('friendsListMain');
             if (friendsContainer) {
                 if (friends.length > 0) {
                     friendsContainer.innerHTML = '';
                     friends.forEach(friendUsername => {
-                        const card = document.createElement('div');
-                        card.className = 'friend-card';
-                        card.innerHTML = `
-                            <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friendUsername.charAt(0)}" 
-                                 alt="${friendUsername}">
-                            <div class="friend-card-info">
-                                <strong>${friendUsername}</strong>
-                                <small>Friend</small>
-                            </div>
-                            <button class="btn-decline" onclick="removeFriend('${friendUsername}')">Remove</button>
-                        `;
+                        const card = createFriendCardWithMutual(friendUsername, true);
                         friendsContainer.appendChild(card);
                     });
                 } else {
@@ -1151,6 +1496,125 @@
             }
         }
 
+        // Enhanced function to get mutual friends
+        async function getMutualFriends(friendUsername) {
+            try {
+                const response = await fetch(`http://localhost:18080/api/friends/mutual/${friendUsername}`, {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+                
+                const data = await response.json();
+                return data.success ? data.mutualFriends : [];
+            } catch (error) {
+                console.error('Error getting mutual friends:', error);
+                return [];
+            }
+        }
+
+        // Create friend card with mutual friends dropdown
+        function createFriendCardWithMutual(friendUsername, showRemoveButton = false) {
+            const card = document.createElement('div');
+            card.className = 'friend-card friend-card-enhanced';
+            
+            const mainContent = document.createElement('div');
+            mainContent.className = 'friend-card-main';
+            
+            mainContent.innerHTML = `
+                <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friendUsername.charAt(0)}" 
+                     alt="${friendUsername}">
+                <div class="friend-card-info">
+                    <strong>${friendUsername}</strong>
+                    <small>Friend</small>
+                </div>
+                <div class="friend-actions">
+                    ${showRemoveButton ? `<button class="btn-decline" onclick="removeFriend('${friendUsername}')">Remove</button>` : ''}
+                </div>
+            `;
+            
+            // Create mutual friends dropdown
+            const mutualDropdown = document.createElement('div');
+            mutualDropdown.className = 'mutual-dropdown';
+            
+            const mutualToggle = document.createElement('button');
+            mutualToggle.className = 'mutual-toggle';
+            mutualToggle.innerHTML = '<span class="loading-spinner"></span> Loading mutual friends...';
+            
+            const mutualList = document.createElement('div');
+            mutualList.className = 'mutual-list';
+            
+            mutualDropdown.appendChild(mutualToggle);
+            mutualDropdown.appendChild(mutualList);
+            
+            card.appendChild(mainContent);
+            card.appendChild(mutualDropdown);
+            
+            // Load mutual friends immediately
+            loadMutualFriendsForCard(friendUsername, mutualToggle, mutualList);
+            
+            return card;
+        }
+
+        // Load mutual friends for a specific card
+        async function loadMutualFriendsForCard(friendUsername, toggleButton, listContainer) {
+            try {
+                const mutualFriends = await getMutualFriends(friendUsername);
+                
+                // Update toggle button
+                toggleButton.className = 'mutual-toggle';
+                if (mutualFriends.length > 0) {
+                    toggleButton.innerHTML = `Mutual Friends <span class="mutual-count">${mutualFriends.length}</span>`;
+                } else {
+                    toggleButton.innerHTML = 'No Mutual Friends';
+                    toggleButton.style.opacity = '0.6';
+                    toggleButton.style.cursor = 'default';
+                    return; // Don't add click handler if no mutual friends
+                }
+                
+                // Populate list container
+                if (mutualFriends.length > 0) {
+                    const ul = document.createElement('ul');
+                    mutualFriends.forEach(mutualFriend => {
+                        const li = document.createElement('li');
+                        li.textContent = mutualFriend;
+                        ul.appendChild(li);
+                    });
+                    listContainer.appendChild(ul);
+                } else {
+                    listContainer.innerHTML = '<div class="no-mutual-friends">No mutual friends found</div>';
+                }
+                
+                // Add click handler to toggle dropdown
+                toggleButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const isOpen = listContainer.classList.contains('show');
+                    
+                    // Close all other dropdowns
+                    document.querySelectorAll('.mutual-list.show').forEach(list => {
+                        list.classList.remove('show');
+                    });
+                    document.querySelectorAll('.mutual-toggle.open').forEach(toggle => {
+                        toggle.classList.remove('open');
+                    });
+                    
+                    // Toggle current dropdown
+                    if (!isOpen && mutualFriends.length > 0) {
+                        listContainer.classList.add('show');
+                        toggleButton.classList.add('open');
+                    }
+                });
+                
+            } catch (error) {
+                console.error('Error loading mutual friends for card:', error);
+                toggleButton.className = 'mutual-toggle';
+                toggleButton.innerHTML = 'Error loading';
+                toggleButton.style.opacity = '0.6';
+                toggleButton.style.cursor = 'default';
+            }
+        }
+
+        // Enhanced loadFriendsSidebar with mutual friends
         async function loadFriendsSidebar() {
             const container = document.getElementById('friendsList');
             if (!container) return;
@@ -1158,15 +1622,7 @@
             if (friends.length > 0) {
                 container.innerHTML = '';
                 friends.forEach(friendUsername => {
-                    const card = document.createElement('div');
-                    card.className = 'friend-card';
-                    card.innerHTML = `
-                        <img src="https://via.placeholder.com/150/1DB954/FFFFFF?text=${friendUsername.charAt(0)}" 
-                             alt="${friendUsername}">
-                        <div class="friend-card-info">
-                            <strong>${friendUsername}</strong>
-                        </div>
-                    `;
+                    const card = createFriendCardWithMutual(friendUsername, false);
                     container.appendChild(card);
                 });
             } else {
@@ -1174,43 +1630,209 @@
             }
         }
 
+        // Enhanced Friend Suggestions with Mutual Friends Count
         async function loadFriendSuggestions() {
             const container = document.getElementById('friendSuggestions');
             if (!container) return;
             
-            // Filter users who are not friends and haven't sent/received requests
-            const suggestions = allUsers.filter(user => {
-                return user.username !== currentUser &&
-                       !friends.includes(user.username) &&
-                       !sentRequests.includes(user.username) &&
-                       !receivedRequests.some(req => req.username === user.username);
-            }).slice(0, 3); // Show max 3 suggestions
+            // Show loading state
+            container.innerHTML = `
+                <div class="suggestion-loading">
+                    <div class="loading-spinner"></div>
+                    Loading suggestions...
+                </div>
+            `;
             
-            if (suggestions.length > 0) {
-                container.innerHTML = '';
-                suggestions.forEach(user => {
-                    const card = document.createElement('div');
-                    card.className = 'friend-card';
-                    card.style.marginLeft = '1rem';
-                    card.innerHTML = `
-                        <img src="${user.avatar || `https://via.placeholder.com/150/1DB954/FFFFFF?text=${user.username.charAt(0)}`}" 
-                             alt="${user.username}">
-                        <div class="friend-card-info">
-                            <strong>${user.username}</strong>
-                            <small style="cursor: pointer; color: #1DB954;" onclick="sendFriendRequest('${user.username}')">Add Friend</small>
-                        </div>
-                    `;
-                    container.appendChild(card);
+            try {
+                const response = await fetch('http://localhost:18080/api/friends/suggestions', {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
                 });
-            } else {
-                container.innerHTML = '<p style="color:#888; margin-left: 1rem;">No suggestions</p>';
+                
+                const data = await response.json();
+                
+                if (data.success && data.suggestions && data.suggestions.length > 0) {
+                    container.innerHTML = '';
+                    
+                    // Create suggestion cards with mutual friend info
+                    data.suggestions.forEach((suggestion, index) => {
+                        const card = createSuggestionCard(suggestion, index + 1);
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = '<div class="no-suggestions">No friend suggestions available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading friend suggestions:', error);
+                container.innerHTML = '<div class="no-suggestions">Error loading suggestions</div>';
             }
         }
+
+        // Create enhanced suggestion card with mutual friends info
+        function createSuggestionCard(suggestion, rank) {
+    const card = document.createElement('div');
+    card.className = 'suggestion-card';
+    card.style.position = 'relative';
+    
+    // Add ranking indicator
+    const rankBadge = document.createElement('div');
+    rankBadge.className = `suggestion-rank rank-${rank}`;
+    rankBadge.textContent = rank;
+    card.appendChild(rankBadge);
+    
+    // Main suggestion content
+    const mainContent = document.createElement('div');
+    mainContent.className = 'suggestion-main';
+    
+    mainContent.innerHTML = `
+        <img src="${suggestion.avatar}" alt="${suggestion.username}">
+        <div class="suggestion-info">
+            <strong>${suggestion.username}</strong>
+        </div>
+    `;
+    
+    // Mutual friends info section
+    const mutualInfo = document.createElement('div');
+    mutualInfo.className = 'suggestion-mutual-info';
+    
+    if (suggestion.mutualCount > 0) {
+        const mutualBadge = document.createElement('div');
+        mutualBadge.className = 'mutual-count-badge';
+        mutualBadge.textContent = `${suggestion.mutualCount} mutual`;
+        
+        const mutualPreview = document.createElement('div');
+        mutualPreview.className = 'mutual-preview';
+        
+        if (suggestion.mutualFriends && suggestion.mutualFriends.length > 0) {
+            const previewNames = suggestion.mutualFriends.slice(0, 2);
+            let previewText = `via ${previewNames.join(', ')}`;
+            if (suggestion.mutualFriends.length > 2) {
+                previewText += ` +${suggestion.mutualFriends.length - 2} more`;
+            }
+            mutualPreview.textContent = previewText;
+        }
+        
+        mutualInfo.appendChild(mutualBadge);
+        mutualInfo.appendChild(mutualPreview);
+    } else {
+        const noMutualText = document.createElement('div');
+        noMutualText.className = 'mutual-preview';
+        noMutualText.textContent = 'Suggested for you';
+        mutualInfo.appendChild(noMutualText);
+    }
+    
+    // Check if friend request was already sent
+    const hasSentRequest = sentRequests.includes(suggestion.username);
+    
+    // Action buttons
+    const actions = document.createElement('div');
+    actions.className = 'suggestion-actions';
+    
+    // Create main action button (Add Friend or Cancel Request)
+    const mainActionBtn = document.createElement('button');
+    mainActionBtn.className = hasSentRequest ? 'add-friend-btn pending' : 'add-friend-btn';
+    mainActionBtn.textContent = hasSentRequest ? 'Cancel Request' : 'Add Friend';
+    mainActionBtn.onclick = () => {
+        if (hasSentRequest) {
+            cancelFriendRequest(suggestion.username);
+        } else {
+            sendFriendRequest(suggestion.username);
+        }
+    };
+    
+    // Style the cancel button differently
+    if (hasSentRequest) {
+        mainActionBtn.style.background = '#666';
+        mainActionBtn.style.color = '#fff';
+    }
+    
+    actions.appendChild(mainActionBtn);
+    
+    // Add "View Mutual" button if there are mutual friends
+    if (suggestion.mutualCount > 0 && suggestion.mutualFriends && suggestion.mutualFriends.length > 0) {
+        const viewMutualBtn = document.createElement('button');
+        viewMutualBtn.className = 'view-mutual-btn';
+        viewMutualBtn.textContent = 'View';
+        
+        // Create dropdown for mutual friends
+        const mutualDropdown = document.createElement('div');
+        mutualDropdown.className = 'suggestion-mutual-dropdown';
+        
+        const mutualList = document.createElement('div');
+        mutualList.className = 'suggestion-mutual-list';
+        
+        // Add a header to the dropdown
+        const header = document.createElement('div');
+        header.style.cssText = `
+            font-weight: bold;
+            color: #1DB954;
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+        `;
+        header.textContent = `Mutual Friends (${suggestion.mutualCount})`;
+        mutualList.appendChild(header);
+        
+        const ul = document.createElement('ul');
+        suggestion.mutualFriends.forEach(mutualFriend => {
+            const li = document.createElement('li');
+            li.textContent = mutualFriend;
+            ul.appendChild(li);
+        });
+        mutualList.appendChild(ul);
+        
+        mutualDropdown.appendChild(mutualList);
+        actions.appendChild(mutualDropdown);
+        
+        // Add click handler for view button
+        viewMutualBtn.onclick = (e) => {
+            e.stopPropagation();
+            const isOpen = mutualList.classList.contains('show');
+            
+            // Close all other suggestion dropdowns
+            document.querySelectorAll('.suggestion-mutual-list.show').forEach(list => {
+                list.classList.remove('show');
+            });
+            
+            // Toggle current dropdown
+            if (!isOpen) {
+                mutualList.classList.add('show');
+            }
+        };
+        
+        actions.appendChild(viewMutualBtn);
+    }
+    
+    // Assemble the card
+    card.appendChild(mainContent);
+    card.appendChild(mutualInfo);
+    card.appendChild(actions);
+    
+    return card;
+}
 
         function logout() {
             sessionStorage.clear();
             location.reload();
         }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.mutual-dropdown') && !e.target.closest('.suggestion-mutual-dropdown')) {
+                document.querySelectorAll('.mutual-list.show').forEach(list => {
+                    list.classList.remove('show');
+                });
+                document.querySelectorAll('.mutual-toggle.open').forEach(toggle => {
+                    toggle.classList.remove('open');
+                });
+                document.querySelectorAll('.suggestion-mutual-list.show').forEach(list => {
+                    list.classList.remove('show');
+                });
+            }
+        });
 
         // Add search on Enter key
         document.addEventListener('DOMContentLoaded', () => {
@@ -1223,102 +1845,103 @@
                 });
             }
         });
-        // Add these functions to your frontend code to debug AVL trees
 
-// Function to get AVL tree structure from backend
-async function getAVLTreeDebug(username) {
-    try {
-        const response = await fetch(`http://localhost:18080/api/debug/avl-tree/${username}`, {
-            headers: {
-                'Authorization': sessionStorage.getItem('authToken')
+        // Debug functions (keep existing ones)
+        async function getAVLTreeDebug(username) {
+            try {
+                const response = await fetch(`http://localhost:18080/api/debug/avl-tree/${username}`, {
+                    headers: {
+                        'Authorization': sessionStorage.getItem('authToken')
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    console.log(`AVL Tree for ${username}:`);
+                    console.log('Tree Structure:', data.tree);
+                    console.log('Height:', data.height);
+                    console.log('Total Friends:', data.count);
+                    console.log('Is Balanced:', data.isBalanced);
+                    
+                    if (data.visual) {
+                        console.log('\nVisual Representation:');
+                        console.log(data.visual);
+                    }
+                    
+                    return data;
+                } else {
+                    console.error('Failed to get AVL tree:', data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching AVL tree:', error);
             }
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            console.log(`AVL Tree for ${username}:`);
-            console.log('Tree Structure:', data.tree);
-            console.log('Height:', data.height);
-            console.log('Total Friends:', data.count);
-            console.log('Is Balanced:', data.isBalanced);
+        }
+
+        function visualizeAVLTree(node, prefix = '', isLeft = true) {
+            if (!node) return '';
             
-            // Visual representation
-            if (data.visual) {
-                console.log('\nVisual Representation:');
-                console.log(data.visual);
+            let result = '';
+            
+            if (node.right) {
+                result += visualizeAVLTree(node.right, prefix + (isLeft ? '│   ' : '    '), false);
             }
             
-            return data;
-        } else {
-            console.error('Failed to get AVL tree:', data.message);
+            result += prefix + (isLeft ? '└── ' : '┌── ') + node.value + ' (h:' + node.height + ')\n';
+            
+            if (node.left) {
+                result += visualizeAVLTree(node.left, prefix + (isLeft ? '    ' : '│   '), true);
+            }
+            
+            return result;
         }
-    } catch (error) {
-        console.error('Error fetching AVL tree:', error);
-    }
-}
-function visualizeAVLTree(node, prefix = '', isLeft = true) {
-    if (!node) return '';
-    
-    let result = '';
-    
-    if (node.right) {
-        result += visualizeAVLTree(node.right, prefix + (isLeft ? '│   ' : '    '), false);
-    }
-    
-    result += prefix + (isLeft ? '└── ' : '┌── ') + node.value + ' (h:' + node.height + ')\n';
-    
-    if (node.left) {
-        result += visualizeAVLTree(node.left, prefix + (isLeft ? '    ' : '│   '), true);
-    }
-    
-    return result;
-}
-function checkAVLProperties(node) {
-    if (!node) return { isValid: true, height: -1 };
-    
-    const leftCheck = checkAVLProperties(node.left);
-    const rightCheck = checkAVLProperties(node.right);
-    
-    const leftHeight = node.left ? node.left.height : -1;
-    const rightHeight = node.right ? node.right.height : -1;
-    const balanceFactor = leftHeight - rightHeight;
-    
-    const isBalanced = Math.abs(balanceFactor) <= 1;
-    const heightCorrect = node.height === Math.max(leftHeight, rightHeight) + 1;
-    
-    return {
-        isValid: leftCheck.isValid && rightCheck.isValid && isBalanced && heightCorrect,
-        height: node.height,
-        balanceFactor: balanceFactor,
-        node: node.value
-    };
-}
-function addAVLDebugButton() {
-    const debugButton = document.createElement('button');
-    debugButton.textContent = 'Debug My AVL Tree';
-    debugButton.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: #1DB954;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        z-index: 1000;
-    `;
-    
-    debugButton.onclick = () => {
-        const currentUser = sessionStorage.getItem('username');
-        if (currentUser) {
-            getAVLTreeDebug(currentUser);
+
+        function checkAVLProperties(node) {
+            if (!node) return { isValid: true, height: -1 };
+            
+            const leftCheck = checkAVLProperties(node.left);
+            const rightCheck = checkAVLProperties(node.right);
+            
+            const leftHeight = node.left ? node.left.height : -1;
+            const rightHeight = node.right ? node.right.height : -1;
+            const balanceFactor = leftHeight - rightHeight;
+            
+            const isBalanced = Math.abs(balanceFactor) <= 1;
+            const heightCorrect = node.height === Math.max(leftHeight, rightHeight) + 1;
+            
+            return {
+                isValid: leftCheck.isValid && rightCheck.isValid && isBalanced && heightCorrect,
+                height: node.height,
+                balanceFactor: balanceFactor,
+                node: node.value
+            };
         }
-    };
-    
-    document.body.appendChild(debugButton);
-}
+
+        function addAVLDebugButton() {
+            const debugButton = document.createElement('button');
+            debugButton.textContent = 'Debug My AVL Tree';
+            debugButton.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #1DB954;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                cursor: pointer;
+                z-index: 1000;
+            `;
+            
+            debugButton.onclick = () => {
+                const currentUser = sessionStorage.getItem('username');
+                if (currentUser) {
+                    getAVLTreeDebug(currentUser);
+                }
+            };
+            
+            document.body.appendChild(debugButton);
+        }
     </script>
 </body>
 </html>

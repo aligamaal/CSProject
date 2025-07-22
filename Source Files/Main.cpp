@@ -807,43 +807,77 @@ CROW_ROUTE(app, "/api/debug/all-avl-trees").methods("GET"_method)
 
     // Get friend suggestions
     CROW_ROUTE(app, "/api/friends/suggestions").methods("GET"_method)
-    ([auth, socialNetwork](const crow::request& req) {
-        crow::response res;
-        res.set_header("Content-Type", "application/json");
-        
-        string token = req.get_header_value("Authorization");
-        string* username = auth->getUsernameFromToken(token);
-        
-        if (!username) {
-            res.code = 401;
-            crow::json::wvalue result;
-            result["success"] = false;
-            result["message"] = "Unauthorized";
-            res.write(result.dump());
-            return res;
-        }
-        
+([auth, socialNetwork](const crow::request& req) {
+    crow::response res;
+    res.set_header("Content-Type", "application/json");
+    
+    string token = req.get_header_value("Authorization");
+    string* username = auth->getUsernameFromToken(token);
+    
+    if (!username) {
+        res.code = 401;
         crow::json::wvalue result;
-        
-        try {
-            auto suggestions = socialNetwork->suggestFriends(*username);
-            result["success"] = true;
-            crow::json::wvalue suggestionsArray;
-            for (size_t i = 0; i < suggestions.size(); ++i) {
-                suggestionsArray[i] = suggestions[i];
-            }
-            result["suggestions"] = std::move(suggestionsArray);
-            res.code = 200;
-        } catch (const std::exception& e) {
-            res.code = 500;
-            result["success"] = false;
-            result["message"] = e.what();
-        }
-        
-        res.add_header("Access-Control-Allow-Origin", "*");
+        result["success"] = false;
+        result["message"] = "Unauthorized";
         res.write(result.dump());
         return res;
-    });
+    }
+    
+    crow::json::wvalue result;
+    
+    try {
+        // Get the basic suggestions (already sorted by mutual count)
+        auto suggestions = socialNetwork->suggestFriends(*username);
+        
+        result["success"] = true;
+        crow::json::wvalue suggestionsArray;
+        
+        // Limit to top 3 and get mutual friend counts for each
+        int maxSuggestions = std::min(3, (int)suggestions.size());
+        
+        for (int i = 0; i < maxSuggestions; ++i) {
+            try {
+                // Get mutual friends between current user and suggestion
+                auto mutualFriends = socialNetwork->getMutualFriends(*username, suggestions[i]);
+                
+                crow::json::wvalue suggestionObj;
+                suggestionObj["username"] = suggestions[i];
+                suggestionObj["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + suggestions[i].substr(0, 1);
+                suggestionObj["mutualCount"] = (int)mutualFriends.size();
+                
+                // Include the actual mutual friends list
+                crow::json::wvalue mutualArray;
+                for (size_t j = 0; j < mutualFriends.size(); ++j) {
+                    mutualArray[j] = mutualFriends[j];
+                }
+                suggestionObj["mutualFriends"] = std::move(mutualArray);
+                
+                suggestionsArray[i] = std::move(suggestionObj);
+            } catch (const std::exception& e) {
+                // If there's an error getting mutual friends, still include the suggestion with 0 count
+                crow::json::wvalue suggestionObj;
+                suggestionObj["username"] = suggestions[i];
+                suggestionObj["avatar"] = "https://via.placeholder.com/150/1DB954/FFFFFF?text=" + suggestions[i].substr(0, 1);
+                suggestionObj["mutualCount"] = 0;
+                suggestionObj["mutualFriends"] = crow::json::wvalue();
+                
+                suggestionsArray[i] = std::move(suggestionObj);
+            }
+        }
+        
+        result["suggestions"] = std::move(suggestionsArray);
+        result["count"] = maxSuggestions;
+        res.code = 200;
+    } catch (const std::exception& e) {
+        res.code = 500;
+        result["success"] = false;
+        result["message"] = e.what();
+    }
+    
+    res.add_header("Access-Control-Allow-Origin", "*");
+    res.write(result.dump());
+    return res;
+});
 
     // Dashboard endpoint
     CROW_ROUTE(app, "/dashboard").methods("GET"_method, "OPTIONS"_method)
