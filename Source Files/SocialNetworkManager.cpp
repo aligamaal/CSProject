@@ -349,7 +349,6 @@ void SocialNetworkManager::cancelRequest(string sender, string receiver) {
         );
     }
 }
-// NEW BST-BASED SEARCH IMPLEMENTATION
 
 vector<string> SocialNetworkManager::searchUsersByPrefix(const string& prefix, const string& currentUser) {
     lock_guard<mutex> lock(mtx);
